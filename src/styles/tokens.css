@@ -1,0 +1,168 @@
+/* ─────────────────────────────────────────────────────────────────────────
+   WANDRLY — design tokens
+
+   Ported from `WANDRLY 2/styles.css` :root, which is the design specification
+   (FRONTEND_TECHNICAL_DESIGN §8.1: "Copy the :root custom properties verbatim
+   — they already work; retyping them into another system only introduces
+   drift"). Values are unchanged except where a comment says otherwise.
+
+   Four runtime switches, all attribute-driven on <html>, exactly as the
+   prototype does it:
+
+     data-theme  dark | light          FR-SET-03
+     data-tex    clean | carto | paper | ticket   PRD §12.7
+     data-type   utility | editorial   D-08 — settled as `utility`
+     --grid-cols / --grid-gap / --pad  density    FR-DASH-11
+
+   The accent is written as an inline custom property on <html> rather than an
+   attribute, since it is a free colour rather than a fixed set.
+   ───────────────────────────────────────────────────────────────────────── */
+
+:root {
+  /* ── Dark (default) ── */
+  --bg: #0a0b0e;
+  --surface: #12141a;
+  --surface-2: #191c23;
+  --surface-3: #20242c;
+  --accent: #f0a05a;
+
+  /* Ported as rgba(201,168,76,·), which is a stale gold from an earlier accent.
+     app.jsx recomputed both from the live accent at runtime, so the prototype
+     never actually rendered these values — it rendered the accent at 14%/15%.
+     Baked here from #F0A05A so the static stylesheet matches what shipped. */
+  --accent-soft: rgba(240, 160, 90, 0.14);
+  --selection: rgba(240, 160, 90, 0.15);
+
+  --teal: #66c6b5;
+  --sienna: #e5654a;
+  --forest: #5fbe8b;
+  --amber: #e4b15e;
+  --purple: #9b8afb;
+
+  --text: #f2f3f5;
+  --text-2: #9aa0aa;
+
+  /* FR-NFR-A11Y-05. The prototype's #5E6570 fails WCAG AA everywhere it is
+     used — 3.35:1 on --bg, 2.65:1 on --surface-3 — and it carries coordinates,
+     footers and metadata throughout the app. #848B96 is the smallest uniform
+     lightening that clears 4.5:1 against all four dark backgrounds
+     (4.53 on --surface-3, 5.73 on --bg). Original: #5E6570. */
+  --text-3: #848b96;
+
+  --border: #23262e;
+  --border-2: #323642;
+
+  --success: #5fbe8b;
+  --warning: #e4b15e;
+  --error: #e25d4c;
+
+  /* ── Radii ── */
+  --r-sm: 6px;
+  --r-md: 12px;
+  --r-lg: 16px;
+  --r-xl: 24px;
+
+  /* ── Shadows ── */
+  --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.4), 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-lift: 0 12px 32px rgba(0, 0, 0, 0.55), 0 2px 6px rgba(0, 0, 0, 0.4);
+  --shadow-glow: 0 0 0 1px rgba(240, 160, 90, 0.45), 0 12px 32px rgba(0, 0, 0, 0.55);
+
+  /* ── Motion ──
+     Two easings only: --ease-enter for movement and reveal, --ease-spring for
+     pops, toggles and anything that should overshoot. */
+  --ease-enter: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* ── Typography ──
+     D-08 settled: all five roles resolve to Instrument Sans, which is what the
+     prototype renders and what every screenshot shows. The roles stay distinct
+     so restoring the editorial mix (Playfair / DM Serif / Pinyon / JetBrains
+     Mono) is a change to this block alone.
+
+     --font-instrument-sans is supplied by next/font in app/layout.tsx. */
+  --f-sans: var(--font-instrument-sans), ui-sans-serif, system-ui, sans-serif;
+  --f-display: var(--f-sans);
+  --f-heading: var(--f-sans);
+  --f-body: var(--f-sans);
+  --f-mono: var(--f-sans);
+  --f-script: var(--f-sans);
+
+  /* ── Visual treatment ── */
+  --noise-opacity: 0.045;
+  --topo-opacity: 0.06;
+  --card-radius: var(--r-lg);
+  --card-edge: none;
+  --grain-blend: normal;
+
+  /* ── Density grid (FR-DASH-11) ──
+     Standard is the shipped default. The other two presets live in
+     density.css and are applied by attribute. */
+  --grid-cols: 3;
+  --grid-gap: 20px;
+  --pad: 40px;
+
+  /* ── Shell ── */
+  --sidebar-w: 276px;
+}
+
+/* ── Light / aged paper (PRD §12.1) ── */
+:root[data-theme='light'] {
+  --bg: #f2f3f6;
+  --surface: #ffffff;
+  --surface-2: #edeff3;
+  --surface-3: #e4e7ed;
+
+  --accent: #d0703f;
+  --accent-soft: rgba(208, 112, 63, 0.12);
+  --selection: rgba(208, 112, 63, 0.16);
+
+  --teal: #2f8a78;
+  --sienna: #c24e33;
+
+  --text: #15171c;
+  --text-2: #5c6470;
+
+  /* Same FR-NFR-A11Y-05 fix as dark, and the light theme was the worse of the
+     two: #969DA8 sat at 2.21–2.73:1. #616873 is the smallest uniform darkening
+     clearing 4.5:1 against all four light backgrounds. Original: #969DA8. */
+  --text-3: #616873;
+
+  --border: #e2e5ea;
+  --border-2: #cdd2da;
+
+  --shadow-card: 0 2px 6px rgba(20, 24, 32, 0.1), 0 1px 1px rgba(20, 24, 32, 0.08);
+  --shadow-lift: 0 14px 36px rgba(20, 24, 32, 0.16), 0 2px 6px rgba(20, 24, 32, 0.1);
+  --shadow-glow: 0 0 0 1px rgba(208, 112, 63, 0.5), 0 14px 36px rgba(20, 24, 32, 0.18);
+
+  --noise-opacity: 0.07;
+  --topo-opacity: 0.09;
+}
+
+/* ── Density presets (FR-DASH-11) ──
+   The prototype wrote these from a DENSITY_MAP in JS; as attributes they
+   survive server rendering and cost no JavaScript. */
+:root[data-density='compact'] {
+  --grid-cols: 4;
+  --grid-gap: 16px;
+  --pad: 32px;
+}
+
+:root[data-density='standard'] {
+  --grid-cols: 3;
+  --grid-gap: 20px;
+  --pad: 40px;
+}
+
+:root[data-density='expressive'] {
+  --grid-cols: 2;
+  --grid-gap: 28px;
+  --pad: 56px;
+}
+
+/* ── Texture (PRD §12.7) ──
+   `clean` is the shipped default and zeroes both ambient layers. The other
+   three are applied by the canvas and card backdrops, which read these vars. */
+:root[data-tex='clean'] {
+  --noise-opacity: 0;
+  --topo-opacity: 0;
+}

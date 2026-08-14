@@ -46,3 +46,6 @@ next-env.d.ts
 /test-results
 /blob-report
 /playwright/.cache
+
+# local screenshot output from scripts/shoot.mjs
+/shots

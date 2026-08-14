@@ -59,6 +59,11 @@ const eslintConfig = [
     rules: { '@typescript-eslint/no-explicit-any': 'off' },
   },
   {
+    // Developer CLI tools. stdout is their entire interface.
+    files: ['scripts/**/*.{js,mjs,ts}'],
+    rules: { 'no-console': 'off' },
+  },
+  {
     ignores: [
       'node_modules/**',
       '.next/**',
