@@ -1,0 +1,273 @@
+/*
+ * Auth has no counterpart in the prototype — PRD marks the whole module [G],
+ * a gap specified for the first time. So this is built from the token system
+ * rather than replicated: the same surfaces, radii, easings and micro-labels
+ * the rest of the app uses, and nothing invented beyond them.
+ */
+
+.shell {
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: var(--bg);
+}
+
+.card {
+  width: min(420px, 100%);
+  padding: 36px 32px 30px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  box-shadow: var(--shadow-lift);
+  animation: rise 420ms var(--ease-enter) both;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+}
+
+.mark {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-bottom: 26px;
+}
+
+.wordmark {
+  font-family: var(--f-display);
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.eyebrow {
+  font-family: var(--f-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+
+.title {
+  margin-top: 6px;
+  font-family: var(--f-display);
+  font-size: 26px;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+}
+
+.lede {
+  margin-top: 7px;
+  font-size: 13px;
+  color: var(--text-2);
+}
+
+.form {
+  margin-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.label {
+  font-family: var(--f-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+
+.input {
+  width: 100%;
+  padding: 11px 13px;
+  background: var(--surface-2);
+  border: 1px solid var(--border-2);
+  border-radius: var(--r-md);
+  color: var(--text);
+  font-size: 14px;
+  transition:
+    border-color 180ms var(--ease-enter),
+    background 180ms var(--ease-enter);
+}
+
+.input::placeholder {
+  color: var(--text-3);
+}
+
+.input:hover {
+  border-color: var(--text-3);
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--accent);
+  background: var(--surface-3);
+}
+
+.input[aria-invalid='true'] {
+  border-color: var(--error);
+}
+
+.fieldError {
+  font-size: 12px;
+  color: var(--error);
+}
+
+.primary {
+  margin-top: 4px;
+  padding: 12px 18px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: var(--bg);
+  font-size: 13.5px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  transition:
+    filter 180ms var(--ease-enter),
+    transform 60ms var(--ease-enter);
+}
+
+.primary:hover:not(:disabled) {
+  filter: brightness(1.08);
+}
+
+.primary:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.primary:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.oauth {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.oauthButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  width: 100%;
+  padding: 11px 16px;
+  background: var(--surface-2);
+  border: 1px solid var(--border-2);
+  border-radius: 999px;
+  color: var(--text);
+  font-size: 13.5px;
+  font-weight: 500;
+  transition:
+    background 180ms var(--ease-enter),
+    border-color 180ms var(--ease-enter),
+    transform 60ms var(--ease-enter);
+}
+
+.oauthButton:hover:not(:disabled) {
+  background: var(--surface-3);
+  border-color: var(--text-3);
+}
+
+.oauthButton:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.oauthButton:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 20px 0;
+  font-family: var(--f-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+
+.divider::before,
+.divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+.alert {
+  padding: 10px 13px;
+  border-radius: var(--r-md);
+  font-size: 12.5px;
+  line-height: 1.45;
+}
+
+.alertError {
+  background: rgba(226, 93, 76, 0.12);
+  border: 1px solid var(--error);
+  color: var(--text);
+}
+
+.alertSuccess {
+  background: rgba(95, 190, 139, 0.12);
+  border: 1px solid var(--success);
+  color: var(--text);
+}
+
+.footer {
+  margin-top: 22px;
+  padding-top: 18px;
+  border-top: 1px solid var(--border);
+  font-size: 12.5px;
+  color: var(--text-2);
+  text-align: center;
+}
+
+.link {
+  color: var(--accent);
+  font-weight: 500;
+}
+
+.link:hover {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.subtleLink {
+  align-self: flex-end;
+  font-size: 12px;
+  color: var(--text-2);
+}
+
+.subtleLink:hover {
+  color: var(--text);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.notice {
+  margin-top: 18px;
+  padding: 11px 13px;
+  background: var(--surface-2);
+  border: 1px dashed var(--border-2);
+  border-radius: var(--r-md);
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--text-2);
+}

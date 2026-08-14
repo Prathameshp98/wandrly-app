@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import { Instrument_Sans } from 'next/font/google';
 import { ThemeScript } from '@/lib/theme/ThemeScript';
 import { DEFAULT_PREFERENCES } from '@/lib/theme/preferences';
+import { QueryProvider } from '@/lib/api/QueryProvider';
 import './globals.css';
 
 /**
@@ -59,7 +60,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>
         <ThemeScript />
       </head>
-      <body>{children}</body>
+      <body>
+        <QueryProvider>{children}</QueryProvider>
+      </body>
     </html>
   );
 }
