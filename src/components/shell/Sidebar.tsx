@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import { CompassMark, I } from '@/components/primitives';
 import { Avatar } from '@/components/primitives';
 import { useFolders } from '@/lib/api/hooks/useTrips';
+import { DropTarget } from './DropTarget';
 import type { Folder } from '@/types/domain';
 import styles from './Sidebar.module.css';
 
@@ -43,8 +44,6 @@ export interface SidebarProps {
   onOpenPalette: () => void;
   onOpenSettings: () => void;
   onOpenNotifications: () => void;
-  /** The drop target currently under a drag, if any. */
-  dropTarget?: string | null;
   user?: { name: string; plan: string };
   counts?: { shared?: number; invites?: number };
 }
@@ -57,7 +56,6 @@ export function Sidebar({
   onOpenPalette,
   onOpenSettings,
   onOpenNotifications,
-  dropTarget = null,
   user,
   counts,
 }: SidebarProps) {
@@ -115,22 +113,29 @@ export function Sidebar({
         <nav className={styles.nav} aria-label="Views">
           {NAV.map(({ href, label, icon: Icon }) => {
             const count = countFor(href);
-            return (
+            const row = (ref?: (element: HTMLElement | null) => void, isOver?: boolean) => (
               <Link
-                key={href}
+                ref={ref}
                 href={href}
                 className={styles.navItem}
                 aria-current={pathname === href ? 'page' : undefined}
-                // The archive is a drop target as well as a destination
-                // (FR-TRIP-08). dnd-kit wires the actual drop; this only
-                // reflects the state.
-                data-dropping={href === '/archive' && dropTarget === 'archive' ? 'true' : undefined}
-                data-drop-id={href === '/archive' ? 'archive' : undefined}
+                data-dropping={isOver || undefined}
               >
                 <Icon />
                 <span className={styles.navLabel}>{label}</span>
                 {count ? <span className={styles.count}>{count}</span> : null}
               </Link>
+            );
+
+            // Archived is a destination and a drop target both (FR-TRIP-08).
+            return href === '/archive' ? (
+              <DropTarget key={href} id="archive">
+                {({ ref, isOver }) => row(ref, isOver)}
+              </DropTarget>
+            ) : (
+              <span key={href} style={{ display: 'contents' }}>
+                {row()}
+              </span>
             );
           })}
         </nav>
@@ -149,27 +154,30 @@ export function Sidebar({
 
         {folders?.items?.length ? (
           folders.items.map((folder: Folder) => (
-            <Link
-              key={folder.id}
-              href={`/f/${folder.id}`}
-              className={styles.folder}
-              aria-current={pathname === `/f/${folder.id}` ? 'page' : undefined}
-              data-dropping={dropTarget === folder.id ? 'true' : undefined}
-              data-drop-id={folder.id}
-            >
-              <span className={styles.folderEmoji} aria-hidden>
-                {folder.emoji}
-              </span>
-              <span className={styles.navLabel}>{folder.name}</span>
-              {folder.isPinned ? (
-                <span
-                  className={styles.folderDot}
-                  style={{ background: TONE_COLOR[folder.tone] ?? 'var(--text-2)' }}
-                  aria-hidden
-                />
-              ) : null}
-              <span className={styles.folderCount}>{folder.tripCount ?? 0}</span>
-            </Link>
+            <DropTarget key={folder.id} id={`folder:${folder.id}`}>
+              {({ ref, isOver }) => (
+                <Link
+                  ref={ref}
+                  href={`/f/${folder.id}`}
+                  className={styles.folder}
+                  aria-current={pathname === `/f/${folder.id}` ? 'page' : undefined}
+                  data-dropping={isOver || undefined}
+                >
+                  <span className={styles.folderEmoji} aria-hidden>
+                    {folder.emoji}
+                  </span>
+                  <span className={styles.navLabel}>{folder.name}</span>
+                  {folder.isPinned ? (
+                    <span
+                      className={styles.folderDot}
+                      style={{ background: TONE_COLOR[folder.tone] ?? 'var(--text-2)' }}
+                      aria-hidden
+                    />
+                  ) : null}
+                  <span className={styles.folderCount}>{folder.tripCount ?? 0}</span>
+                </Link>
+              )}
+            </DropTarget>
           ))
         ) : (
           <p className={styles.empty}>No folders yet.</p>

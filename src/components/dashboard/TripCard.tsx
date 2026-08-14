@@ -46,7 +46,7 @@ export function TripCard({
       data-dragging={dragging || undefined}
       {...dragHandleProps}
     >
-      <Link href={`/t/${trip.id}`} className={styles.link}>
+      <Link href={`/t/${trip.id}`} className={styles.link} draggable={false}>
         <div className={styles.imgWrap}>
           <div className={styles.img} style={{ background: coverBackground(trip) }} />
           <div className={styles.imgScrim} />
@@ -74,7 +74,7 @@ export function TripCard({
       {/* Layered over the link rather than nested inside it — a button inside
           an anchor is invalid markup and breaks keyboard activation. */}
       <div className={styles.actions}>
-        <Link href={`/t/${trip.id}`} className={styles.action}>
+        <Link href={`/t/${trip.id}`} className={styles.action} draggable={false}>
           Open canvas
         </Link>
         <button

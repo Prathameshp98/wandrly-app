@@ -1,8 +1,11 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { AvatarStack, Button, ButtonLink, I } from '@/components/primitives';
 import { TripCard, AddTripCard } from '@/components/dashboard/TripCard';
+import { SortableTripCard } from '@/components/dashboard/SortableTripCard';
+import { SortableContext, rectSortingStrategy } from '@dnd-kit/sortable';
+import { useDragContext } from '@/components/shell/DragProvider';
 import { FolderCard } from '@/components/dashboard/FolderCard';
 import { TripPeek } from '@/components/dashboard/TripPeek';
 import {
@@ -56,6 +59,24 @@ export default function DashboardPage() {
 
   const pinned = filtered.filter((trip) => trip.isPinned);
   const spotlight = trips.find((trip) => trip.id === data?.stats?.nextTripId) ?? null;
+
+  // A drag reorders instantly; the mutation's own optimistic patch then keeps
+  // it there while the server catches up.
+  const { registerSortable } = useDragContext();
+  const [order, setOrder] = useState<string[] | null>(null);
+
+  const ordered = useMemo(() => {
+    if (!order) return filtered;
+    const position = new Map(order.map((id, index) => [id, index]));
+    return [...filtered].sort(
+      (a, b) => (position.get(a.id) ?? Infinity) - (position.get(b.id) ?? Infinity),
+    );
+  }, [filtered, order]);
+
+  useEffect(() => {
+    registerSortable({ ids: ordered.map((trip) => trip.id), onReorder: setOrder });
+    return () => registerSortable(null);
+  }, [ordered, registerSortable]);
 
   if (isLoading) return <DashboardSkeleton />;
 
@@ -150,21 +171,23 @@ export default function DashboardPage() {
           </h2>
         </div>
 
-        {filtered.length === 0 ? (
+        {ordered.length === 0 ? (
           <EmptyState search={search} onNewTrip={() => setOpenModal('new-trip')} />
         ) : (
-          <div className={styles.grid}>
-            {filtered.map((trip) => (
-              <TripCard
-                key={trip.id}
-                trip={trip}
-                folders={folders?.items ?? []}
-                onAction={handleAction}
-                onMoveToFolder={handleMove}
-              />
-            ))}
-            <AddTripCard onClick={() => setOpenModal('new-trip')} sub="Where to next?" />
-          </div>
+          <SortableContext items={ordered.map((trip) => trip.id)} strategy={rectSortingStrategy}>
+            <div className={styles.grid}>
+              {ordered.map((trip) => (
+                <SortableTripCard
+                  key={trip.id}
+                  trip={trip}
+                  folders={folders?.items ?? []}
+                  onAction={handleAction}
+                  onMoveToFolder={handleMove}
+                />
+              ))}
+              <AddTripCard onClick={() => setOpenModal('new-trip')} sub="Where to next?" />
+            </div>
+          </SortableContext>
         )}
       </section>
 

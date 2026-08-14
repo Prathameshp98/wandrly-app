@@ -13,14 +13,6 @@ interface ShellState {
 
   openModal: ShellModal;
   setOpenModal: (modal: ShellModal) => void;
-
-  /**
-   * The folder id or `'archive'` currently under a drag, so the sidebar can
-   * highlight it. Held here because the draggable and the drop target sit in
-   * different subtrees.
-   */
-  dropTarget: string | null;
-  setDropTarget: (target: string | null) => void;
 }
 
 /**
@@ -37,7 +29,4 @@ export const useShellStore = create<ShellState>((set) => ({
 
   openModal: null,
   setOpenModal: (openModal) => set({ openModal }),
-
-  dropTarget: null,
-  setDropTarget: (dropTarget) => set({ dropTarget }),
 }));

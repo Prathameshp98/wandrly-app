@@ -7,6 +7,7 @@ import { ToastViewport } from '@/components/primitives';
 import { NewTripModal } from '@/components/modals/NewTripModal';
 import { NewFolderModal } from '@/components/modals/NewFolderModal';
 import { CommandPalette } from './CommandPalette';
+import { DragProvider } from './DragProvider';
 import { useShellStore } from '@/stores/shell';
 import styles from './Sidebar.module.css';
 
@@ -23,7 +24,7 @@ import styles from './Sidebar.module.css';
  */
 export function AppShell({ children }: { children: React.ReactNode }) {
   const router = useRouter();
-  const { search, setSearch, openModal, setOpenModal, dropTarget } = useShellStore();
+  const { search, setSearch, openModal, setOpenModal } = useShellStore();
   const [paletteOpen, setPaletteOpen] = useState(false);
 
   // ⌘K from anywhere, including inside the canvas (FR-SRCH-02).
@@ -41,34 +42,35 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const closeModal = useCallback(() => setOpenModal(null), [setOpenModal]);
 
   return (
-    <div className={styles.shell}>
-      <Sidebar
-        search={search}
-        onSearch={setSearch}
-        onNewTrip={() => setOpenModal('new-trip')}
-        onNewFolder={() => setOpenModal('new-folder')}
-        onOpenPalette={() => setPaletteOpen(true)}
-        onOpenSettings={() => setOpenModal('settings')}
-        onOpenNotifications={() => setOpenModal('notifications')}
-        dropTarget={dropTarget}
-      />
+    <DragProvider>
+      <div className={styles.shell}>
+        <Sidebar
+          search={search}
+          onSearch={setSearch}
+          onNewTrip={() => setOpenModal('new-trip')}
+          onNewFolder={() => setOpenModal('new-folder')}
+          onOpenPalette={() => setPaletteOpen(true)}
+          onOpenSettings={() => setOpenModal('settings')}
+          onOpenNotifications={() => setOpenModal('notifications')}
+        />
 
-      <main className={styles.main}>{children}</main>
+        <main className={styles.main}>{children}</main>
 
-      <NewTripModal
-        open={openModal === 'new-trip'}
-        onClose={closeModal}
-        // FR-TRIP-02: creating a trip drops you straight into its canvas.
-        onCreated={(tripId) => {
-          closeModal();
-          router.push(`/t/${tripId}`);
-        }}
-      />
-      <NewFolderModal open={openModal === 'new-folder'} onClose={closeModal} />
+        <NewTripModal
+          open={openModal === 'new-trip'}
+          onClose={closeModal}
+          // FR-TRIP-02: creating a trip drops you straight into its canvas.
+          onCreated={(tripId) => {
+            closeModal();
+            router.push(`/t/${tripId}`);
+          }}
+        />
+        <NewFolderModal open={openModal === 'new-folder'} onClose={closeModal} />
 
-      <CommandPalette open={paletteOpen} onClose={() => setPaletteOpen(false)} />
+        <CommandPalette open={paletteOpen} onClose={() => setPaletteOpen(false)} />
 
-      <ToastViewport />
-    </div>
+        <ToastViewport />
+      </div>
+    </DragProvider>
   );
 }
