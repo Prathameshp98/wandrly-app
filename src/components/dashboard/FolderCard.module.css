@@ -1,0 +1,92 @@
+/* Ported from `WANDRLY 2/styles.css` .fcard, with the hover micro-interactions
+   from the animation layer at 4530. */
+
+.card {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+  transition:
+    background 200ms var(--ease-enter),
+    border-color 200ms var(--ease-enter);
+}
+
+.card:hover {
+  background: var(--surface-2);
+  border-color: var(--border-2);
+}
+
+.card[data-dropping='true'] {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+/* A tinted left edge in the folder's own tone, so the five are separable at a
+   glance without the colour being the only signal — the name is right there. */
+.card::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--folder-tone);
+  opacity: 0.85;
+}
+
+.tile {
+  width: 40px;
+  height: 40px;
+  border-radius: 11px;
+  background: var(--surface-2);
+  display: grid;
+  place-items: center;
+  font-size: 19px;
+  flex-shrink: 0;
+  transition:
+    transform 260ms var(--ease-spring),
+    background 200ms;
+}
+
+.card:hover .tile {
+  transform: scale(1.1) rotate(-4deg);
+}
+
+.text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.name {
+  font-family: var(--f-body);
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.count {
+  font-family: var(--f-mono);
+  font-size: 11px;
+  color: var(--text-3);
+}
+
+.chevron {
+  color: var(--text-3);
+  flex-shrink: 0;
+  transition: transform 200ms var(--ease-enter);
+}
+
+.card:hover .chevron {
+  transform: translateX(3px);
+}

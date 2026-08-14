@@ -1,5 +1,6 @@
 import { forwardRef } from 'react';
-import type { ButtonHTMLAttributes } from 'react';
+import type { AnchorHTMLAttributes, ButtonHTMLAttributes } from 'react';
+import Link from 'next/link';
 import styles from './Button.module.css';
 
 export type ButtonVariant = 'primary' | 'ghost' | 'subtle' | 'quiet' | 'danger';
@@ -65,5 +66,52 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
       {loading ? <span className={styles.spinner} aria-hidden /> : null}
       {children}
     </button>
+  );
+});
+
+export interface ButtonLinkProps extends AnchorHTMLAttributes<HTMLAnchorElement> {
+  href: string;
+  variant?: ButtonVariant;
+  size?: ButtonSize;
+  iconOnly?: boolean;
+  block?: boolean;
+}
+
+/**
+ * A link that looks like a button.
+ *
+ * Deliberately not an `asChild` prop on Button: something that navigates should
+ * be an `<a>`, so it gets the browser's own affordances — middle-click, open in
+ * a new tab, the status bar URL — and announces as a link rather than a button.
+ * Making one element pretend to be the other is how those get lost.
+ */
+export const ButtonLink = forwardRef<HTMLAnchorElement, ButtonLinkProps>(function ButtonLink(
+  {
+    href,
+    variant = 'ghost',
+    size = 'md',
+    iconOnly = false,
+    block = false,
+    className,
+    children,
+    ...rest
+  },
+  ref,
+) {
+  const classes = [
+    styles.base,
+    styles[variant],
+    styles[size],
+    iconOnly && styles.iconOnly,
+    block && styles.block,
+    className,
+  ]
+    .filter(Boolean)
+    .join(' ');
+
+  return (
+    <Link ref={ref} href={href} className={classes} {...rest}>
+      {children}
+    </Link>
   );
 });

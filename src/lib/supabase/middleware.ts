@@ -1,6 +1,6 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { createServerClient } from '@supabase/ssr';
-import { env } from '@/lib/env';
+import { devAccessToken, env } from '@/lib/env';
 
 /**
  * Routes reachable without a session.
@@ -53,6 +53,13 @@ export async function updateSession(request: NextRequest): Promise<NextResponse>
   // authenticate, so guarding would lock every route behind a sign-in page that
   // cannot work. This is the local dev-token path; see lib/supabase/token.
   if (!url || !anonKey) return response;
+
+  // A dev token means the API is being reached with an HS256 token minted
+  // locally, and there is no Supabase session to find — guarding here would
+  // bounce every request to a sign-in page that cannot produce one. Already
+  // undefined outside development (see lib/env), so this cannot weaken
+  // production.
+  if (devAccessToken) return response;
 
   const supabase = createServerClient(url, anonKey, {
     cookies: {

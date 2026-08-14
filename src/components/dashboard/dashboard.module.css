@@ -1,0 +1,385 @@
+/* Ported from `WANDRLY 2/styles.css`, override layers resolved. */
+
+.page {
+  max-width: 1500px;
+  margin: 0 auto;
+  padding: 40px var(--pad) 120px;
+}
+
+/* ── Greeting ── */
+
+.greet {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 28px;
+  margin-bottom: 22px;
+  animation: fadeUp 500ms var(--ease-enter) both;
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+}
+
+.eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.eyebrowDot {
+  color: var(--accent-text);
+}
+
+.greetTitle {
+  font-family: var(--f-display);
+  font-weight: 600;
+  font-size: clamp(26px, 2.8vw, 34px);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  text-wrap: balance;
+}
+
+.greetTag {
+  font-size: 14px;
+  color: var(--text-2);
+  margin-top: 8px;
+}
+
+.greetTag em {
+  font-style: normal;
+  color: var(--text);
+  font-weight: 600;
+}
+
+.stats {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+  font-size: 12.5px;
+  color: var(--text-2);
+  white-space: nowrap;
+}
+
+.stats b {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.statDot {
+  color: var(--text-3);
+}
+
+/* ── Spotlight ── */
+
+.spotlight {
+  display: grid;
+  grid-template-columns: 42% 1fr;
+  border-radius: 20px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  margin-bottom: 52px;
+  min-height: 300px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+  animation: fadeUp 620ms var(--ease-enter) both;
+  animation-delay: 80ms;
+  position: relative;
+}
+
+:global(:root[data-theme='light']) .spotlight {
+  box-shadow: 0 24px 60px rgba(20, 24, 32, 0.14);
+}
+
+.spotlightImg {
+  position: relative;
+  background-size: cover;
+  background-position: center;
+  background-color: var(--surface-2);
+  transition: transform 6s var(--ease-enter);
+}
+
+.spotlight:hover .spotlightImg {
+  transform: scale(1.04);
+}
+
+/*
+ * The scrim is a fixed near-black in both themes. It sits over a photograph,
+ * not over a surface, and the white heading on top of it needs the same
+ * contrast on paper as it does in the dark.
+ */
+.spotlightScrim {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(10, 11, 14, 0.86) 0%,
+      rgba(10, 11, 14, 0.55) 45%,
+      rgba(10, 11, 14, 0.1) 100%
+    ),
+    linear-gradient(0deg, rgba(10, 11, 14, 0.55) 0%, transparent 40%);
+}
+
+.spotlightContent {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 32px;
+  padding: 36px 40px 32px;
+  min-height: 320px;
+}
+
+.spotlightEyebrow {
+  font-family: var(--f-mono);
+  font-size: 12px;
+  color: rgba(242, 243, 245, 0.72);
+  letter-spacing: 0.02em;
+  margin-bottom: 6px;
+}
+
+.spotlightTitle {
+  font-weight: 600;
+  font-size: clamp(30px, 3.4vw, 42px);
+  line-height: 1.02;
+  letter-spacing: -0.025em;
+  color: #fff;
+  margin-bottom: 18px;
+  text-wrap: balance;
+}
+
+.spotlightFoot {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.spotlightCount {
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.countNum {
+  font-family: var(--f-display);
+  font-weight: 800;
+  font-size: clamp(64px, 7vw, 96px);
+  line-height: 0.9;
+  color: #fff;
+  font-variant-numeric: tabular-nums;
+}
+
+.countLabel {
+  font-family: var(--f-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(242, 243, 245, 0.68);
+  margin-top: 8px;
+}
+
+/* ── Readiness ── */
+
+.readiness {
+  margin-bottom: 24px;
+  max-width: 420px;
+}
+
+.readinessTop {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.readinessPct {
+  font-family: var(--f-display);
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--accent);
+}
+
+.readinessCount {
+  font-family: var(--f-mono);
+  font-size: 11.5px;
+  color: rgba(242, 243, 245, 0.6);
+  white-space: nowrap;
+}
+
+.readinessTrack {
+  height: 7px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.14);
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.readinessFill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--accent), color-mix(in oklch, var(--accent), #fff 30%));
+  box-shadow: 0 0 12px color-mix(in srgb, var(--accent) 40%, transparent);
+  transition: width 900ms var(--ease-enter);
+}
+
+/* ── Sections ── */
+
+.section {
+  margin-bottom: 52px;
+}
+
+.sectionHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 22px;
+  gap: 24px;
+}
+
+.sectionTitle {
+  font-family: var(--f-heading);
+  font-weight: 600;
+  font-size: 20px;
+  letter-spacing: -0.02em;
+  color: var(--text);
+}
+
+.sectionHint {
+  font-size: 12px;
+  color: var(--text-3);
+}
+
+.countChip {
+  margin-left: 10px;
+  font-family: var(--f-mono);
+  font-size: 11px;
+  color: var(--text-3);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 2px 9px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(var(--grid-cols), 1fr);
+  gap: var(--grid-gap);
+}
+
+.pinnedRow {
+  display: flex;
+  gap: var(--grid-gap);
+  overflow-x: auto;
+  padding-bottom: 8px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-2) transparent;
+}
+
+.pinnedRow > * {
+  flex: 0 0 clamp(240px, 22vw, 300px);
+}
+
+.foldersGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+}
+
+/* ── Footer strip ── */
+
+.footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  justify-content: space-between;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+  font-family: var(--f-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.04em;
+  color: var(--text-3);
+}
+
+/* ── Loading ── */
+
+.skeleton {
+  border-radius: 18px;
+  background: linear-gradient(90deg, var(--surface) 25%, var(--surface-2) 37%, var(--surface) 63%);
+  background-size: 400% 100%;
+  animation: shimmer 1.4s ease infinite;
+}
+
+@keyframes shimmer {
+  from {
+    background-position: 100% 0;
+  }
+  to {
+    background-position: -100% 0;
+  }
+}
+
+.skeletonSpotlight {
+  height: 320px;
+  margin-bottom: 52px;
+}
+
+.skeletonCard {
+  height: 300px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton {
+    animation: none;
+  }
+}
+
+/* ── Responsive ── */
+
+@media (max-width: 900px) {
+  .spotlight {
+    grid-template-columns: 1fr;
+  }
+
+  .spotlightImg {
+    min-height: 200px;
+  }
+
+  .greet {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .foldersGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .spotlightContent {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 24px;
+  }
+
+  .spotlightCount {
+    text-align: left;
+  }
+}

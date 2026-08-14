@@ -1,0 +1,373 @@
+/*
+ * Ported from `WANDRLY 2/styles.css` .tcard and its later override layers.
+ *
+ * The card is a link, not a `<div onClick>`, so the whole surface is reachable
+ * and the URL is visible on hover. The action row and the menu are separate
+ * controls layered above it rather than nested inside — a button inside an
+ * anchor is invalid, and the prototype's version only worked because the
+ * anchor was a div.
+ */
+
+.card {
+  position: relative;
+  border-radius: 18px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  overflow: hidden;
+  isolation: isolate;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+  transition:
+    transform 240ms var(--ease-enter),
+    box-shadow 240ms var(--ease-enter),
+    border-color 240ms var(--ease-enter);
+}
+
+:global(:root[data-theme='light']) .card {
+  box-shadow: var(--shadow-card);
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  border-color: var(--border-2);
+  box-shadow: 0 20px 44px rgba(0, 0, 0, 0.4);
+}
+
+:global(:root[data-theme='light']) .card:hover {
+  box-shadow: 0 20px 44px rgba(20, 24, 32, 0.16);
+}
+
+.card[data-dragging='true'] {
+  opacity: 0.55;
+  transform: scale(0.97) rotate(-1.6deg);
+}
+
+/* The whole card is one link; everything else layers over it. */
+.link {
+  display: block;
+  color: inherit;
+}
+
+.link:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -3px;
+  border-radius: 18px;
+}
+
+.imgWrap {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  background: var(--surface-2);
+}
+
+.tall .imgWrap {
+  aspect-ratio: 3 / 4;
+}
+
+.img {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  transition: transform 700ms var(--ease-enter);
+}
+
+.card:hover .img {
+  transform: scale(1.06);
+}
+
+.imgScrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(0deg, rgba(10, 11, 14, 0.55) 0%, transparent 55%);
+}
+
+.statusChip {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 3;
+  transition: transform 200ms var(--ease-enter);
+}
+
+.card:hover .statusChip {
+  transform: translateY(-1px);
+}
+
+/* ── Body ── */
+
+.body {
+  position: relative;
+  padding: 18px 20px 16px;
+  z-index: 3;
+  background: var(--surface);
+}
+
+.eyebrow {
+  font-size: 11.5px;
+  color: var(--text-2);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 8px;
+  letter-spacing: 0.01em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.title {
+  font-family: var(--f-display);
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 1.1;
+  color: var(--text);
+  letter-spacing: -0.01em;
+  margin-bottom: 16px;
+  text-wrap: balance;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--text-2);
+  letter-spacing: 0.01em;
+}
+
+.metaSpacer {
+  flex: 1;
+}
+
+/* ── Readiness bar along the bottom edge ── */
+
+.ready {
+  position: relative;
+  height: 3px;
+  background: var(--surface-3);
+}
+
+.readyFill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), color-mix(in oklch, var(--accent), #fff 30%));
+  transition:
+    width 900ms var(--ease-enter),
+    filter 240ms,
+    box-shadow 240ms;
+}
+
+.card:hover .readyFill {
+  filter: brightness(1.15);
+  box-shadow: 0 0 12px color-mix(in srgb, var(--accent) 70%, transparent);
+}
+
+/* ── Hover actions and the kebab ── */
+
+.menuButton {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 4;
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
+  display: grid;
+  place-items: center;
+  background: rgba(10, 11, 14, 0.62);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(242, 243, 245, 0.16);
+  color: #f2f3f5;
+  opacity: 0;
+  transform: translateY(-4px);
+  transition:
+    opacity 200ms,
+    transform 200ms var(--ease-enter);
+}
+
+.card:hover .menuButton,
+.menuButton:focus-visible,
+.menuButton[data-open='true'] {
+  opacity: 1;
+  transform: none;
+}
+
+/*
+ * FR-NFR-TOUCH: hover-revealed affordances need a persistent equivalent where
+ * there is no hover. Rather than invent a long-press, the menu is simply
+ * always visible on touch.
+ */
+@media (hover: none) {
+  .menuButton {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.actions {
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: 12px;
+  z-index: 4;
+  display: flex;
+  gap: 8px;
+  opacity: 0;
+  transform: translateY(6px);
+  transition:
+    opacity 220ms var(--ease-enter),
+    transform 220ms var(--ease-enter);
+}
+
+.card:hover .actions,
+.actions:focus-within {
+  opacity: 1;
+  transform: none;
+}
+
+@media (hover: none) {
+  .actions {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.action {
+  flex: 1;
+  padding: 8px 10px;
+  border-radius: 9px;
+  background: rgba(10, 11, 14, 0.66);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(242, 243, 245, 0.16);
+  color: #f2f3f5;
+  font-size: 12px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: background 180ms var(--ease-enter);
+}
+
+.action:hover {
+  background: rgba(10, 11, 14, 0.82);
+}
+
+.actionIcon {
+  flex: 0 0 34px;
+}
+
+/* ── Add-trip card ── */
+
+.add {
+  border-radius: 18px;
+  border: 1.5px dashed var(--border-2);
+  background: transparent;
+  display: grid;
+  place-items: center;
+  min-height: 220px;
+  color: var(--text-2);
+  text-align: center;
+  padding: 32px;
+  gap: 6px;
+  transition: all 240ms var(--ease-enter);
+}
+
+.add:hover {
+  border-color: var(--accent);
+  color: var(--accent-text);
+  background: var(--accent-soft);
+}
+
+.add:active {
+  transform: scale(0.97);
+  transition-duration: 60ms;
+}
+
+.addTitle {
+  font-size: 14.5px;
+  font-weight: 600;
+}
+
+.addSub {
+  font-size: 11.5px;
+  color: var(--text-3);
+}
+
+/* ── Menu ── */
+
+.menu {
+  min-width: 216px;
+  background: var(--surface);
+  border: 1px solid var(--border-2);
+  border-radius: 10px;
+  padding: 6px;
+  box-shadow:
+    0 20px 50px rgba(0, 0, 0, 0.55),
+    0 2px 6px rgba(0, 0, 0, 0.3);
+  z-index: 60;
+  animation: menuPop 160ms var(--ease-enter);
+  transform-origin: top right;
+}
+
+:global(:root[data-theme='light']) .menu {
+  box-shadow: 0 20px 50px rgba(20, 24, 32, 0.18);
+}
+
+@keyframes menuPop {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(-4px);
+  }
+}
+
+.menuItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 7px;
+  font-size: 13px;
+  color: var(--text-2);
+  text-align: left;
+  cursor: pointer;
+}
+
+.menuItem[data-highlighted],
+.menuItem:hover {
+  background: var(--surface-2);
+  color: var(--text);
+  outline: none;
+}
+
+.menuItem[data-danger='true'] {
+  color: var(--error);
+}
+
+.menuItem[data-danger='true'][data-highlighted],
+.menuItem[data-danger='true']:hover {
+  background: color-mix(in srgb, var(--error) 14%, transparent);
+  color: var(--error);
+}
+
+.menuSeparator {
+  height: 1px;
+  background: var(--border);
+  margin: 5px 4px;
+}
+
+.menuLabel {
+  font-family: var(--f-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  padding: 8px 10px 4px;
+}
