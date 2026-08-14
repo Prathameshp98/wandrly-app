@@ -1,0 +1,162 @@
+/*
+ * Modal and drawer chrome, ported from `WANDRLY 2/styles.css` — .modal-backdrop
+ * and .modal (1383-1437), .detail and .picker-backdrop (3115-3140).
+ *
+ * The `h3` rule at 1407 is the display face, italic, 30px; the shipped
+ * `data-type="utility"` layer rewrites it at 4182 to 24px upright. Resolved.
+ */
+
+.backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 11, 14, 0.74);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  z-index: 100;
+  animation: fadeIn 280ms var(--ease-enter);
+}
+
+:global(:root[data-theme='light']) .backdrop {
+  background: rgba(21, 23, 28, 0.42);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+}
+
+/* ── Modal ── */
+
+.modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(560px, 92vw);
+  max-height: 88vh;
+  overflow-y: auto;
+  background: var(--surface);
+  border: 1px solid var(--border-2);
+  border-radius: var(--r-lg);
+  padding: 36px;
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
+  z-index: 101;
+  animation: popIn 360ms var(--ease-spring);
+}
+
+.wide {
+  width: min(720px, 92vw);
+}
+
+@keyframes popIn {
+  from {
+    transform: translate(-50%, calc(-50% + 20px)) scale(0.96);
+    opacity: 0;
+  }
+}
+
+.title {
+  font-family: var(--f-display);
+  font-weight: 600;
+  font-size: 24px;
+  letter-spacing: -0.02em;
+  margin-bottom: 6px;
+  color: var(--text);
+}
+
+.lede {
+  font-size: 13px;
+  color: var(--text-2);
+  margin-bottom: 22px;
+}
+
+.body {
+  /* The prototype caps the scroll area rather than the modal; keeping that
+     means the title and footer stay put while a long form scrolls. */
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 26px;
+}
+
+.close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  color: var(--text-3);
+}
+
+.close:hover {
+  color: var(--text);
+}
+
+/* ── Drawer ── */
+
+.panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: min(420px, 92vw);
+  background: var(--surface);
+  border-left: 1px solid var(--border-2);
+  box-shadow: -20px 0 50px rgba(0, 0, 0, 0.5);
+  z-index: 101;
+  display: flex;
+  flex-direction: column;
+  animation: slideIn 320ms var(--ease-enter);
+}
+
+.panelWide {
+  width: min(560px, 92vw);
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+  }
+}
+
+.panelHead {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 20px 22px 16px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.panelTitle {
+  font-family: var(--f-body);
+  font-weight: 600;
+  font-size: 16px;
+  letter-spacing: -0.01em;
+  color: var(--text);
+}
+
+.panelSub {
+  margin-top: 3px;
+  font-family: var(--f-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.04em;
+  color: var(--text-3);
+}
+
+.panelBody {
+  flex: 1;
+  overflow-y: auto;
+  padding: 18px 22px;
+}
+
+.panelFoot {
+  padding: 16px 22px;
+  border-top: 1px solid var(--border);
+  flex-shrink: 0;
+}

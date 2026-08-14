@@ -36,10 +36,16 @@ export type BlockLayout = (typeof BLOCK_LAYOUTS)[number];
  * since the dark-mode value is far too pale on white.
  */
 export const ACCENTS = [
-  { id: 'gold', label: 'Gold', dark: '#F0A05A', light: '#D0703F' },
-  { id: 'sienna', label: 'Sienna', dark: '#E5654A', light: '#C24E33' },
-  { id: 'teal', label: 'Teal', dark: '#66C6B5', light: '#2F8A78' },
-  { id: 'periwinkle', label: 'Periwinkle', dark: '#8FA9FF', light: '#5A6FC9' },
+  { id: 'gold', label: 'Gold', dark: '#F0A05A', light: '#D0703F', lightText: '#914E2C' },
+  { id: 'sienna', label: 'Sienna', dark: '#E5654A', light: '#C24E33', lightText: '#9F402A' },
+  { id: 'teal', label: 'Teal', dark: '#66C6B5', light: '#2F8A78', lightText: '#246A5C' },
+  {
+    id: 'periwinkle',
+    label: 'Periwinkle',
+    dark: '#8FA9FF',
+    light: '#5A6FC9',
+    lightText: '#495AA3',
+  },
 ] as const;
 
 export type AccentId = (typeof ACCENTS)[number]['id'];
@@ -70,6 +76,25 @@ export const STORAGE_KEY = 'wandrly:preferences';
 export function accentValue(id: AccentId, theme: Theme = 'dark'): string {
   const accent = ACCENTS.find((candidate) => candidate.id === id) ?? ACCENTS[0];
   return theme === 'light' ? accent.light : accent.dark;
+}
+
+/**
+ * The accent as *text*, which is a different problem from the accent as a fill.
+ *
+ * Every light-theme accent fails WCAG AA for body text on our surfaces — gold
+ * sits at 2.79:1 — so accent-coloured links and labels need a darker variant.
+ * The brand colour is untouched: `--accent` still paints buttons, borders,
+ * focus rings and large numerals, where the 3:1 large-text threshold applies.
+ * In dark mode every accent already clears 4.5:1, so the two are the same.
+ *
+ * The light values clear 4.5:1 against `--accent-soft` composited over each
+ * surface as well as the surfaces themselves, because accent text most often
+ * appears on an accent-tinted chip or pressed pill — the tint pulls the
+ * background toward the text and costs roughly 0.2 of contrast.
+ */
+export function accentTextValue(id: AccentId, theme: Theme = 'dark'): string {
+  const accent = ACCENTS.find((candidate) => candidate.id === id) ?? ACCENTS[0];
+  return theme === 'light' ? accent.lightText : accent.dark;
 }
 
 /**
@@ -117,6 +142,7 @@ export function normalisePreferences(input: unknown): Preferences {
  */
 export function applyPreferences(preferences: Preferences, root: HTMLElement): void {
   const accent = accentValue(preferences.accent, preferences.theme);
+  const accentText = accentTextValue(preferences.accent, preferences.theme);
   const { soft, selection } = accentAlphas(accent);
 
   root.setAttribute('data-theme', preferences.theme);
@@ -126,6 +152,7 @@ export function applyPreferences(preferences: Preferences, root: HTMLElement): v
   root.setAttribute('data-layout', preferences.blockLayout);
 
   root.style.setProperty('--accent', accent);
+  root.style.setProperty('--accent-text', accentText);
   root.style.setProperty('--accent-soft', soft);
   root.style.setProperty('--selection', selection);
 

@@ -1,0 +1,168 @@
+/*
+ * Ported from `WANDRLY 2/styles.css`, with the four override layers resolved.
+ *
+ * `.btn-primary` is declared at 1438 in the display face, italic, 15px — and
+ * then rewritten at 4165 by the shipped `data-type="utility"` layer to the body
+ * face, upright, 600, 13.5px. Only the resolved values are here; carrying both
+ * would mean every future change had to reason about which one wins.
+ *
+ * The `:active { scale(0.97) }` press comes from the shared selector list at
+ * 4508, which every button-shaped control in the prototype opts into.
+ */
+
+.base {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  border-radius: 999px;
+  font-family: var(--f-body);
+  font-style: normal;
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    background 200ms var(--ease-enter),
+    border-color 200ms var(--ease-enter),
+    filter 200ms var(--ease-enter),
+    color 200ms var(--ease-enter);
+}
+
+.base:active:not(:disabled) {
+  transform: scale(0.97);
+  transition-duration: 60ms;
+}
+
+.base:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ── Variants ── */
+
+.primary {
+  border: 0;
+  background: var(--accent);
+  /* Fixed rather than var(--bg): the accent is light in both themes, so a dark
+     glyph is the readable choice in both. */
+  color: #15171c;
+  font-weight: 600;
+}
+
+.primary:hover:not(:disabled) {
+  filter: brightness(1.08);
+}
+
+.ghost {
+  border: 1px solid var(--border-2);
+  background: transparent;
+  color: var(--text);
+  font-weight: 500;
+}
+
+.ghost:hover:not(:disabled) {
+  background: var(--surface-2);
+  border-color: var(--text-3);
+}
+
+.subtle {
+  border: 1px solid transparent;
+  background: var(--surface-2);
+  color: var(--text);
+  font-weight: 500;
+}
+
+.subtle:hover:not(:disabled) {
+  background: var(--surface-3);
+}
+
+.quiet {
+  border: 0;
+  background: transparent;
+  color: var(--text-2);
+  font-weight: 500;
+}
+
+.quiet:hover:not(:disabled) {
+  color: var(--text);
+  background: var(--surface-2);
+}
+
+/* A solid fill, as the prototype's ConfirmModal does it — "danger paints button
+   var(--error)". A red-tinted background under red text reads softer but fails
+   contrast in both themes, because the tint pulls the background toward the
+   text: 3.72:1 dark, 3.90:1 light. */
+.danger {
+  border: 1px solid transparent;
+  background: var(--error);
+  color: var(--error-ink);
+  font-weight: 600;
+}
+
+.danger:hover:not(:disabled) {
+  filter: brightness(1.08);
+}
+
+/* ── Sizes ── */
+
+.sm {
+  padding: 6px 13px;
+  font-size: 12.5px;
+}
+
+.md {
+  padding: 11px 22px;
+  font-size: 13.5px;
+}
+
+.lg {
+  padding: 13px 26px;
+  font-size: 15px;
+}
+
+/* An icon-only control still needs a 40px hit area; the prototype's toolstrip
+   and utility buttons are all 40x40 or 32x32. */
+.iconOnly {
+  padding: 0;
+  aspect-ratio: 1;
+}
+
+.iconOnly.sm {
+  width: 32px;
+}
+
+.iconOnly.md {
+  width: 40px;
+}
+
+.iconOnly.lg {
+  width: 48px;
+}
+
+.block {
+  width: 100%;
+}
+
+/* The spinner replaces the label's leading position rather than the label
+   itself, so the button never changes width mid-action and shifts the layout. */
+.spinner {
+  width: 13px;
+  height: 13px;
+  border: 1.6px solid currentColor;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 620ms linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spinner {
+    animation-duration: 1.6s;
+  }
+}

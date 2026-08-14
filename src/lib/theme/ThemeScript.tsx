@@ -17,7 +17,10 @@ import { ACCENTS, DEFAULT_PREFERENCES, STORAGE_KEY } from './preferences';
  */
 export function ThemeScript() {
   const accentMap = Object.fromEntries(
-    ACCENTS.map((accent) => [accent.id, { dark: accent.dark, light: accent.light }]),
+    ACCENTS.map((accent) => [
+      accent.id,
+      { dark: accent.dark, light: accent.light, lightText: accent.lightText },
+    ]),
   );
 
   const script = `
@@ -33,7 +36,9 @@ export function ThemeScript() {
 
     var root = document.documentElement;
     var theme = p.theme === 'light' ? 'light' : 'dark';
-    var accent = (accents[p.accent] || accents[d.accent])[theme];
+    var chosen = accents[p.accent] || accents[d.accent];
+    var accent = chosen[theme];
+    var accentText = theme === 'light' ? chosen.lightText : chosen.dark;
     var n = parseInt(accent.slice(1), 16);
     var rgb = ((n >> 16) & 255) + ', ' + ((n >> 8) & 255) + ', ' + (n & 255);
 
@@ -43,6 +48,7 @@ export function ThemeScript() {
     root.setAttribute('data-type', p.typeEmphasis || d.typeEmphasis);
     root.setAttribute('data-layout', p.blockLayout || d.blockLayout);
     root.style.setProperty('--accent', accent);
+    root.style.setProperty('--accent-text', accentText);
     root.style.setProperty('--accent-soft', 'rgba(' + rgb + ', 0.14)');
     root.style.setProperty('--selection', 'rgba(' + rgb + ', 0.15)');
     root.style.colorScheme = theme;

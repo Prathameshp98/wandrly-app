@@ -32,6 +32,7 @@ const COLOUR_TOKENS = [
   '--surface-2',
   '--surface-3',
   '--accent',
+  '--accent-text',
   '--accent-soft',
   '--teal',
   '--sienna',
@@ -57,7 +58,7 @@ const TYPE_SCALE = [10, 11, 12, 13, 14, 16, 18, 20, 24, 30] as const;
 const GRID_TOKENS = ['--grid-cols', '--grid-gap', '--pad'] as const;
 
 const SURFACES = ['--bg', '--surface', '--surface-2', '--surface-3'] as const;
-const FOREGROUNDS = ['--text', '--text-2', '--text-3', '--accent'] as const;
+const FOREGROUNDS = ['--text', '--text-2', '--text-3', '--accent-text', '--accent'] as const;
 
 export default function TokensPage() {
   const { preferences, hydrate, set } = usePreferences();
@@ -180,7 +181,16 @@ export default function TokensPage() {
             <tbody>
               {FOREGROUNDS.map((foreground) => (
                 <tr key={foreground}>
-                  <th scope="row" style={{ color: `var(${foreground})` }}>
+                  {/* A swatch rather than colouring the label itself. Painting
+                      the label in the colour being measured makes this table
+                      fail the very check it reports — `--accent` is a fill
+                      colour and is not meant to carry small text. */}
+                  <th scope="row">
+                    <span
+                      className={styles.rowSwatch}
+                      style={{ background: `var(${foreground})` }}
+                      aria-hidden
+                    />
                     {foreground}
                   </th>
                   {SURFACES.map((surface) => {

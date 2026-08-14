@@ -1,0 +1,57 @@
+/* Ported from `WANDRLY 2/styles.css` .inline-readout / .inline-edit / .inline-placeholder. */
+
+.readout {
+  cursor: text;
+  border-radius: 4px;
+  padding: 2px 4px;
+  /* Negative margin cancels the padding so the readout occupies exactly the
+     space the plain text would, and nothing shifts when it gains a hover
+     background or turns into the input. */
+  margin: -2px -4px;
+  transition: background 120ms;
+  /* It is a real button, so these undo the UA button styling the prototype
+     never had to think about. */
+  display: block;
+  width: calc(100% + 8px);
+  text-align: inherit;
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+}
+
+.readout:hover {
+  background: var(--accent-soft);
+}
+
+.placeholder {
+  color: var(--text-3);
+  font-style: italic;
+}
+
+.edit {
+  appearance: none;
+  border: 1px solid var(--accent);
+  background: var(--surface);
+  color: var(--text);
+  border-radius: 5px;
+  padding: 3px 6px;
+  margin: -4px -7px;
+  font: inherit;
+  outline: none;
+  width: calc(100% + 14px);
+  box-sizing: border-box;
+  display: block;
+}
+
+.edit:focus-visible {
+  /* The accent border already is the focus affordance here, and the global
+     focus ring would double it. */
+  outline: none;
+}
+
+textarea.edit {
+  resize: vertical;
+  min-height: 4.5em;
+  line-height: 1.5;
+}

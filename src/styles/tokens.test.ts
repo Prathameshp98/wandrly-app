@@ -39,8 +39,28 @@ function tokensIn(selector: string): Record<string, string> {
   return declarations;
 }
 
-const DARK = tokensIn(':root');
-const LIGHT = { ...DARK, ...tokensIn(":root[data-theme='light']") };
+/**
+ * Follow `var(--x)` aliases so a token defined by reference — `--accent-text`
+ * is `var(--accent)` in dark — resolves to a colour the contrast maths can
+ * read, the same way the browser resolves it.
+ */
+function resolveVars(tokens: Record<string, string>): Record<string, string> {
+  const resolved: Record<string, string> = {};
+  for (const [name, declared] of Object.entries(tokens)) {
+    let value = declared;
+    // Bounded, because a token cycle should fail the test rather than hang it.
+    for (let depth = 0; depth < 5; depth++) {
+      const alias = value.match(/^var\(\s*(--[\w-]+)\s*\)$/)?.[1];
+      if (!alias) break;
+      value = tokens[alias] ?? value;
+    }
+    resolved[name] = value;
+  }
+  return resolved;
+}
+
+const DARK = resolveVars(tokensIn(':root'));
+const LIGHT = resolveVars({ ...tokensIn(':root'), ...tokensIn(":root[data-theme='light']") });
 
 const SURFACES = ['--bg', '--surface', '--surface-2', '--surface-3'] as const;
 
@@ -48,7 +68,7 @@ describe.each([
   ['dark', DARK],
   ['light', LIGHT],
 ])('%s theme', (themeName, theme) => {
-  it.each(['--text', '--text-2', '--text-3'])(
+  it.each(['--text', '--text-2', '--text-3', '--accent-text'])(
     `%s meets WCAG AA against every surface`,
     (foreground) => {
       for (const surface of SURFACES) {

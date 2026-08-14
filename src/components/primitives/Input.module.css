@@ -1,0 +1,100 @@
+/* Ported from `WANDRLY 2/styles.css` .modal label / .modal input (1416-1436). */
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.label {
+  display: block;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+
+.optional {
+  margin-left: 6px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: none;
+  color: var(--text-3);
+}
+
+.input {
+  appearance: none;
+  width: 100%;
+  padding: 12px 16px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font: inherit;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 180ms var(--ease-enter);
+}
+
+.input::placeholder {
+  color: var(--text-3);
+}
+
+.input:hover:not(:disabled) {
+  border-color: var(--border-2);
+}
+
+.input:focus {
+  border-color: var(--accent);
+}
+
+.input:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.input[aria-invalid='true'] {
+  border-color: var(--error);
+}
+
+textarea.input {
+  resize: vertical;
+  min-height: 5em;
+  line-height: 1.5;
+}
+
+select.input {
+  /* The UA arrow disappears under `appearance: none`, so the caret is drawn
+     here. `currentColor` is not available in a data URI, hence --text-2 baked
+     into the stroke; it reads correctly on both themes' input surface. */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%239AA0AA' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  padding-right: 40px;
+  cursor: pointer;
+}
+
+.hint {
+  font-size: 12px;
+  color: var(--text-3);
+}
+
+.error {
+  font-size: 12px;
+  color: var(--error);
+}
+
+/* Character counters on the fields PRD §6.2 caps — trip title at 80, day note
+   at 200, comment body at 2000. */
+.counter {
+  align-self: flex-end;
+  font-family: var(--f-mono);
+  font-size: 10.5px;
+  color: var(--text-3);
+  font-variant-numeric: tabular-nums;
+}
+
+.counterOver {
+  color: var(--error);
+}

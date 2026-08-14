@@ -1,0 +1,80 @@
+/* Ported from `WANDRLY 2/styles.css` .chip (957-979). */
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(10, 11, 14, 0.72);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(242, 243, 245, 0.14);
+  font-family: var(--f-body);
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text);
+  white-space: nowrap;
+}
+
+/*
+ * The chip is designed to sit on a photo, hence the dark scrim. On a light
+ * surface that scrim would be a black lozenge, so the paper theme inverts it.
+ */
+:global(:root[data-theme='light']) .chip {
+  background: rgba(255, 255, 255, 0.82);
+  border-color: rgba(21, 23, 28, 0.12);
+}
+
+/* A tone colours the label and the dot, never the fill — FR-NFR-A11Y-06 says
+   status is never carried by colour alone, so the text always states it too. */
+/* --warning, not --amber: the two are the same #E4B15E in dark, but only the
+   semantic token has a light-theme value that passes contrast. --amber stays
+   the palette colour for block-type iconography, which is a graphical object
+   at the 3:1 threshold rather than text. */
+.planning {
+  color: var(--warning);
+}
+
+.confirmed {
+  color: var(--success);
+}
+
+.draft {
+  color: var(--text-3);
+}
+
+.completed {
+  color: var(--text-2);
+}
+
+.archived {
+  color: var(--text-3);
+}
+
+.accent {
+  color: var(--accent-text);
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  flex-shrink: 0;
+}
+
+/* Sits inline in a card body rather than over an image: no scrim, no blur. */
+.plain {
+  background: var(--surface-2);
+  border-color: var(--border);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+:global(:root[data-theme='light']) .plain {
+  background: var(--surface-2);
+  border-color: var(--border);
+}

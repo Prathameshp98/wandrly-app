@@ -87,7 +87,7 @@
 
 .segment[aria-pressed='true'] {
   background: var(--accent-soft);
-  color: var(--accent);
+  color: var(--accent-text);
   font-weight: 600;
 }
 
@@ -307,4 +307,14 @@
   background: var(--surface-2);
   border: 1px solid var(--border);
   border-radius: 18px;
+}
+
+.rowSwatch {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  margin-right: 8px;
+  vertical-align: -1px;
+  border: 1px solid var(--border-2);
 }

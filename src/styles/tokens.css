@@ -33,6 +33,14 @@
   --accent-soft: rgba(240, 160, 90, 0.14);
   --selection: rgba(240, 160, 90, 0.15);
 
+  /* The accent as *text* is a different problem from the accent as a fill.
+     FR-NFR-A11Y-05 wants 4.5:1 for body text, and in the light theme every
+     accent fails that on our surfaces — gold sits at 2.79:1. `--accent` keeps
+     painting fills, borders, focus rings and large numerals, where the 3:1
+     large-text threshold applies; `--accent-text` is what small accent-coloured
+     text uses. In dark mode they are the same value. */
+  --accent-text: var(--accent);
+
   --teal: #66c6b5;
   --sienna: #e5654a;
   --forest: #5fbe8b;
@@ -55,6 +63,10 @@
   --success: #5fbe8b;
   --warning: #e4b15e;
   --error: #e25d4c;
+  /* Readable text on a solid --error fill. The right answer flips by theme:
+     dark ink clears 5.04:1 on the bright dark-theme red, white clears 5.58:1
+     on the darker light-theme one, and each fails on the other. */
+  --error-ink: #15171c;
 
   /* ── Radii ── */
   --r-sm: 6px;
@@ -113,6 +125,8 @@
   --surface-3: #e4e7ed;
 
   --accent: #d0703f;
+  /* #D0703F is 2.79:1 on --surface-3; this clears 4.5:1 on all four. */
+  --accent-text: #914e2c;
   --accent-soft: rgba(208, 112, 63, 0.12);
   --selection: rgba(208, 112, 63, 0.16);
 
@@ -129,6 +143,16 @@
 
   --border: #e2e5ea;
   --border-2: #cdd2da;
+
+  /* The prototype's light block redefines --teal and --sienna but never these
+     three, so they stay tuned for a near-black background and land at 1.58:1
+     to 2.87:1 on paper — every error message and status label in the light
+     theme. Same FR-NFR-A11Y-05 treatment: darkened on-hue until they clear
+     4.5:1 on all four light surfaces. Dark theme keeps the originals. */
+  --success: #3a7354;
+  --warning: #806335;
+  --error: #ae473a;
+  --error-ink: #ffffff;
 
   --shadow-card: 0 2px 6px rgba(20, 24, 32, 0.1), 0 1px 1px rgba(20, 24, 32, 0.08);
   --shadow-lift: 0 14px 36px rgba(20, 24, 32, 0.16), 0 2px 6px rgba(20, 24, 32, 0.1);

@@ -1,0 +1,87 @@
+/* Ported from `WANDRLY 2/styles.css` — .avatar (193-215), .avatar-stack (1073-1090),
+   and the stack's spring hover (4524-4528). */
+
+.avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-family: var(--f-display);
+  font-weight: 700;
+  font-size: 13px;
+  /* Fixed, not var(--text): every tone gradient is light enough that a dark
+     glyph is the readable choice in both themes. */
+  color: #15171c;
+  flex-shrink: 0;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  position: relative;
+  user-select: none;
+}
+
+.sm {
+  width: 22px;
+  height: 22px;
+  font-size: 10px;
+}
+
+.lg {
+  width: 40px;
+  height: 40px;
+  font-size: 14px;
+}
+
+/* Presence, driven by trip_members.last_active_at. Decorative in the prototype;
+   real once phase 8 lands. */
+.live::after {
+  content: '';
+  position: absolute;
+  right: -2px;
+  bottom: -2px;
+  width: 9px;
+  height: 9px;
+  background: var(--success);
+  border: 2px solid var(--surface);
+  border-radius: 50%;
+}
+
+.stack {
+  display: flex;
+}
+
+.stack .avatar {
+  margin-left: -6px;
+  border: 2px solid var(--surface);
+  transition: transform 240ms var(--ease-spring);
+}
+
+.stack .avatar:first-child {
+  margin-left: 0;
+}
+
+/* The fan on hover — second and third avatars slide out by 2px and 4px. */
+.stack:hover .avatar:nth-child(2),
+.stack[data-fanned='true'] .avatar:nth-child(2) {
+  transform: translateX(2px);
+}
+
+.stack:hover .avatar:nth-child(3),
+.stack[data-fanned='true'] .avatar:nth-child(3) {
+  transform: translateX(4px);
+}
+
+.more {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--surface-2);
+  color: var(--text-2);
+  font-size: 9.5px;
+  font-weight: 700;
+  display: grid;
+  place-items: center;
+  margin-left: -6px;
+  border: 2px solid var(--surface);
+  font-family: var(--f-mono);
+  flex-shrink: 0;
+}
