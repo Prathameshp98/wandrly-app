@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { getBrowserClient } from '@/lib/supabase/browser';
 import { isSupabaseConfigured } from '@/lib/env';
+import { Button } from '@/components/primitives';
 import { AuthCard, Alert } from '../AuthCard';
 import styles from '../auth.module.css';
 
@@ -97,9 +98,9 @@ export default function ResetPasswordPage() {
           ) : null}
         </div>
 
-        <button type="submit" className={styles.primary} disabled={pending || mismatch}>
+        <Button type="submit" variant="primary" block loading={pending} disabled={mismatch}>
           {pending ? 'Saving…' : 'Save and continue'}
-        </button>
+        </Button>
       </form>
     </AuthCard>
   );

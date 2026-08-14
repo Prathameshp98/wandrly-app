@@ -1,10 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { getBrowserClient } from '@/lib/supabase/browser';
+import { getAuthCapabilities, type OAuthProvider } from '@/lib/supabase/providers';
 import { isSupabaseConfigured } from '@/lib/env';
+import { Button } from '@/components/primitives';
 import { Alert } from './AuthCard';
 import { GoogleIcon, AppleIcon } from './OAuthIcons';
 import styles from './auth.module.css';
@@ -25,9 +27,25 @@ export function SignInForm({ mode }: { mode: Mode }) {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [pending, setPending] = useState<null | 'password' | 'magic' | 'google' | 'apple'>(null);
+  const [pending, setPending] = useState<null | 'password' | 'magic' | OAuthProvider>(null);
+  // Only render buttons for providers this project has actually enabled; one
+  // that is off fails at the redirect with an error the user cannot act on.
+  const [providers, setProviders] = useState<OAuthProvider[]>([]);
+  const [autoConfirm, setAutoConfirm] = useState(false);
   const [error, setError] = useState<string | null>(searchParams.get('error'));
   const [notice, setNotice] = useState<string | null>(null);
+
+  useEffect(() => {
+    let active = true;
+    void getAuthCapabilities().then((capabilities) => {
+      if (!active) return;
+      setProviders(capabilities.oauthProviders);
+      setAutoConfirm(capabilities.emailAutoConfirm);
+    });
+    return () => {
+      active = false;
+    };
+  }, []);
 
   // Where the middleware wanted them to land. Already validated same-origin
   // there and again in the callback route.
@@ -57,10 +75,16 @@ export function SignInForm({ mode }: { mode: Mode }) {
         });
         if (signUpError) throw signUpError;
 
-        // With email confirmation on, there is no session yet and the user has
-        // to go and click the link — saying so beats a silent no-op.
+        // With email confirmation on — which this project has — there is no
+        // session yet and the user must click the link. Saying so beats a
+        // silent no-op. `autoConfirm` is read from the project rather than
+        // assumed, so this copy stays true if that setting changes.
         if (!data.session) {
-          setNotice(`Check ${email} for a link to confirm your account.`);
+          setNotice(
+            autoConfirm
+              ? 'Your account is ready. Signing you in…'
+              : `Check ${email} for a link to confirm your account.`,
+          );
           return;
         }
       } else {
@@ -100,7 +124,7 @@ export function SignInForm({ mode }: { mode: Mode }) {
     }
   }
 
-  async function handleOAuth(provider: 'google' | 'apple') {
+  async function handleOAuth(provider: OAuthProvider) {
     setError(null);
     setPending(provider);
 
@@ -176,7 +200,13 @@ export function SignInForm({ mode }: { mode: Mode }) {
           ) : null}
         </div>
 
-        <button type="submit" className={styles.primary} disabled={busy}>
+        <Button
+          type="submit"
+          variant="primary"
+          block
+          loading={pending === 'password'}
+          disabled={busy}
+        >
           {pending === 'password'
             ? isSignUp
               ? 'Creating your account…'
@@ -184,40 +214,43 @@ export function SignInForm({ mode }: { mode: Mode }) {
             : isSignUp
               ? 'Begin a Journey'
               : 'Sign in'}
-        </button>
+        </Button>
 
-        <button
-          type="button"
-          className={styles.oauthButton}
-          onClick={handleMagicLink}
+        <Button
+          variant="subtle"
+          block
+          loading={pending === 'magic'}
           disabled={busy}
+          onClick={handleMagicLink}
         >
           {pending === 'magic' ? 'Sending your link…' : 'Email me a link instead'}
-        </button>
+        </Button>
       </form>
 
-      <div className={styles.divider}>or</div>
-
-      <div className={styles.oauth}>
-        <button
-          type="button"
-          className={styles.oauthButton}
-          onClick={() => handleOAuth('google')}
-          disabled={busy}
-        >
-          <GoogleIcon />
-          {pending === 'google' ? 'Redirecting…' : 'Continue with Google'}
-        </button>
-        <button
-          type="button"
-          className={styles.oauthButton}
-          onClick={() => handleOAuth('apple')}
-          disabled={busy}
-        >
-          <AppleIcon />
-          {pending === 'apple' ? 'Redirecting…' : 'Continue with Apple'}
-        </button>
-      </div>
+      {providers.length > 0 ? (
+        <>
+          <div className={styles.divider}>or</div>
+          <div className={styles.oauth}>
+            {providers.map((provider) => (
+              <Button
+                key={provider}
+                variant="subtle"
+                block
+                disabled={busy}
+                onClick={() => handleOAuth(provider)}
+              >
+                {provider === 'google' ? <GoogleIcon /> : <AppleIcon />}
+                {pending === provider ? 'Redirecting…' : PROVIDER_LABEL[provider]}
+              </Button>
+            ))}
+          </div>
+        </>
+      ) : null}
     </>
   );
 }
+
+const PROVIDER_LABEL: Record<OAuthProvider, string> = {
+  google: 'Continue with Google',
+  apple: 'Continue with Apple',
+};

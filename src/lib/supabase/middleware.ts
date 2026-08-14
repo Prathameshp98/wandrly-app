@@ -12,6 +12,10 @@ import { env } from '@/lib/env';
 const PUBLIC_PREFIXES = [
   '/p',
   '/invite',
+  // The design-system reference pages. They render no user data and exist to be
+  // compared against the prototype, so guarding them only means signing in to
+  // look at a colour swatch. They are excluded from production builds.
+  '/dev',
   '/sign-in',
   '/sign-up',
   '/auth/callback',

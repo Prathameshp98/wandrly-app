@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { getBrowserClient } from '@/lib/supabase/browser';
 import { isSupabaseConfigured } from '@/lib/env';
+import { Button } from '@/components/primitives';
 import { AuthCard, Alert } from '../AuthCard';
 import styles from '../auth.module.css';
 
@@ -78,9 +79,9 @@ export default function ForgotPasswordPage() {
             />
           </div>
 
-          <button type="submit" className={styles.primary} disabled={pending}>
+          <Button type="submit" variant="primary" block loading={pending}>
             {pending ? 'Sending…' : 'Send the link'}
-          </button>
+          </Button>
         </form>
       )}
     </AuthCard>

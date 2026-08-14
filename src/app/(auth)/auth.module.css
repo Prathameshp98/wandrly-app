@@ -1,4 +1,8 @@
 /*
+ * Buttons come from the Button primitive; this file had its own copies, and
+ * theirs used `color: var(--bg)` on the accent, which is 3.12:1 in the light
+ * theme. Two implementations of one control is how that happens.
+ *
  * Auth has no counterpart in the prototype — PRD marks the whole module [G],
  * a gap specified for the first time. So this is built from the token system
  * rather than replicated: the same surfaces, radii, easings and micro-labels
@@ -125,70 +129,10 @@
   color: var(--error);
 }
 
-.primary {
-  margin-top: 4px;
-  padding: 12px 18px;
-  border-radius: 999px;
-  background: var(--accent);
-  color: var(--bg);
-  font-size: 13.5px;
-  font-weight: 600;
-  letter-spacing: -0.01em;
-  transition:
-    filter 180ms var(--ease-enter),
-    transform 60ms var(--ease-enter);
-}
-
-.primary:hover:not(:disabled) {
-  filter: brightness(1.08);
-}
-
-.primary:active:not(:disabled) {
-  transform: scale(0.97);
-}
-
-.primary:disabled {
-  opacity: 0.55;
-  cursor: not-allowed;
-}
-
 .oauth {
   display: flex;
   flex-direction: column;
   gap: 9px;
-}
-
-.oauthButton {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 9px;
-  width: 100%;
-  padding: 11px 16px;
-  background: var(--surface-2);
-  border: 1px solid var(--border-2);
-  border-radius: 999px;
-  color: var(--text);
-  font-size: 13.5px;
-  font-weight: 500;
-  transition:
-    background 180ms var(--ease-enter),
-    border-color 180ms var(--ease-enter),
-    transform 60ms var(--ease-enter);
-}
-
-.oauthButton:hover:not(:disabled) {
-  background: var(--surface-3);
-  border-color: var(--text-3);
-}
-
-.oauthButton:active:not(:disabled) {
-  transform: scale(0.97);
-}
-
-.oauthButton:disabled {
-  opacity: 0.55;
-  cursor: not-allowed;
 }
 
 .divider {
