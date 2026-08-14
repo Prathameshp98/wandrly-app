@@ -6,6 +6,7 @@ import { Sidebar } from './Sidebar';
 import { ToastViewport } from '@/components/primitives';
 import { NewTripModal } from '@/components/modals/NewTripModal';
 import { NewFolderModal } from '@/components/modals/NewFolderModal';
+import { CommandPalette } from './CommandPalette';
 import { useShellStore } from '@/stores/shell';
 import styles from './Sidebar.module.css';
 
@@ -65,11 +66,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       />
       <NewFolderModal open={openModal === 'new-folder'} onClose={closeModal} />
 
-      <ToastViewport />
+      <CommandPalette open={paletteOpen} onClose={() => setPaletteOpen(false)} />
 
-      {/* The palette lands in the next commit; the shortcut is wired now so the
-          keyboard path is never the thing left until last. */}
-      {paletteOpen ? null : null}
+      <ToastViewport />
     </div>
   );
 }
