@@ -2,8 +2,9 @@
 
 import { useMemo, useState } from 'react';
 import { AvatarStack, Button, ButtonLink, I } from '@/components/primitives';
-import { TripCard, AddTripCard, type TripAction } from '@/components/dashboard/TripCard';
+import { TripCard, AddTripCard } from '@/components/dashboard/TripCard';
 import { FolderCard } from '@/components/dashboard/FolderCard';
+import { TripPeek } from '@/components/dashboard/TripPeek';
 import {
   daysToGoLabel,
   coverBackground,
@@ -11,18 +12,9 @@ import {
   readinessCaption,
   tripEyebrow,
 } from '@/components/dashboard/trip-presentation';
-import {
-  useArchiveTrip,
-  useDashboard,
-  useDeleteTrip,
-  useDuplicateTrip,
-  useFolders,
-  useMembers,
-  useMoveTripToFolder,
-  usePinTrip,
-} from '@/lib/api/hooks/useTrips';
+import { useDashboard, useFolders, useMembers } from '@/lib/api/hooks/useTrips';
+import { useTripActions } from '@/components/dashboard/useTripActions';
 import { useShellStore } from '@/stores/shell';
-import { toast } from '@/stores/toasts';
 import type { DashboardTrip } from '@/types/domain';
 import styles from '@/components/dashboard/dashboard.module.css';
 
@@ -43,13 +35,11 @@ export default function DashboardPage() {
   const search = useShellStore((state) => state.search);
   const setOpenModal = useShellStore((state) => state.setOpenModal);
 
-  const pinTrip = usePinTrip();
-  const archiveTrip = useArchiveTrip();
-  const deleteTrip = useDeleteTrip();
-  const duplicateTrip = useDuplicateTrip();
-  const moveToFolder = useMoveTripToFolder();
-
-  const [, setPeekTripId] = useState<string | null>(null);
+  const [peekTripId, setPeekTripId] = useState<string | null>(null);
+  const { handleAction, handleMove } = useTripActions({
+    onPeek: (trip) => setPeekTripId(trip.id),
+    refetch,
+  });
 
   const trips = useMemo(() => data?.items ?? [], [data]);
 
@@ -66,62 +56,6 @@ export default function DashboardPage() {
 
   const pinned = filtered.filter((trip) => trip.isPinned);
   const spotlight = trips.find((trip) => trip.id === data?.stats?.nextTripId) ?? null;
-
-  function handleAction(action: TripAction, trip: DashboardTrip) {
-    switch (action) {
-      case 'peek':
-        setPeekTripId(trip.id);
-        toast.success('Quick preview lands in the next commit.');
-        break;
-      case 'pin':
-        pinTrip.mutate({ tripId: trip.id, pinned: !trip.isPinned });
-        break;
-      case 'duplicate':
-        duplicateTrip.mutate(
-          { tripId: trip.id },
-          { onSuccess: (copy) => toast.success(`Duplicated as “${copy.title}”`) },
-        );
-        break;
-      case 'archive':
-        archiveTrip.mutate(
-          { tripId: trip.id, tripTitle: trip.title },
-          {
-            // FR-UNDO-01: archiving is undoable, and the toast names the object.
-            onSuccess: () =>
-              toast.undoable(`Archived “${trip.title}”`, () =>
-                moveToFolder.mutate({ tripId: trip.id, folderId: trip.folderId ?? null }),
-              ),
-          },
-        );
-        break;
-      case 'delete':
-        deleteTrip.mutate(
-          { tripId: trip.id, tripTitle: trip.title },
-          { onSuccess: () => toast.undoable(`Deleted “${trip.title}”`, () => refetch()) },
-        );
-        break;
-      default:
-        toast.success('That lands in a later phase.');
-    }
-  }
-
-  function handleMove(folderId: string | null, trip: DashboardTrip) {
-    const folder = folders?.items?.find((candidate) => candidate.id === folderId);
-    const previousFolderId = trip.folderId ?? null;
-
-    moveToFolder.mutate(
-      { tripId: trip.id, folderId, previousFolderId },
-      {
-        onSuccess: () =>
-          toast.undoable(
-            folder
-              ? `Moved “${trip.title}” → ${folder.emoji} ${folder.name}`
-              : `Unfiled “${trip.title}”`,
-            () => moveToFolder.mutate({ tripId: trip.id, folderId: previousFolderId }),
-          ),
-      },
-    );
-  }
 
   if (isLoading) return <DashboardSkeleton />;
 
@@ -246,6 +180,8 @@ export default function DashboardPage() {
           </div>
         </section>
       ) : null}
+
+      <TripPeek tripId={peekTripId} onClose={() => setPeekTripId(null)} />
 
       <footer className={styles.footer}>
         <span>WANDRLY · Folio Edition</span>

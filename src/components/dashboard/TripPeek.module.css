@@ -1,0 +1,167 @@
+/* The Peek drawer body. The shell itself comes from PanelShell. */
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.cover {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  border-radius: var(--r-md);
+  background-size: cover;
+  background-position: center;
+}
+
+.coverChip {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+}
+
+.subtitle {
+  font-size: 13.5px;
+  color: var(--text-2);
+  line-height: 1.5;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.stat {
+  padding: 12px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  text-align: center;
+}
+
+.statLabel {
+  font-family: var(--f-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+
+.statValue {
+  margin-top: 4px;
+  font-family: var(--f-display);
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.sectionTitle {
+  font-family: var(--f-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+
+.readinessRow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.readinessPct {
+  font-family: var(--f-display);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--accent-text);
+}
+
+.readinessCaption {
+  font-family: var(--f-mono);
+  font-size: 11px;
+  color: var(--text-3);
+}
+
+.track {
+  height: 7px;
+  border-radius: 999px;
+  background: var(--surface-3);
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+
+.fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--accent), color-mix(in oklch, var(--accent), #fff 30%));
+  transition: width 900ms var(--ease-enter);
+}
+
+.crewList {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  list-style: none;
+  margin-top: 4px;
+}
+
+.crewList li {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 13px;
+  color: var(--text);
+}
+
+.role {
+  font-family: var(--f-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+
+.mono {
+  font-family: var(--f-mono);
+  font-size: 12px;
+  color: var(--text-2);
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.footer {
+  display: flex;
+}
+
+/* ── Loading ── */
+
+.skeletonStack {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.skeletonCover {
+  aspect-ratio: 16 / 9;
+  border-radius: var(--r-md);
+  background: var(--surface-2);
+}
+
+.skeletonRow {
+  height: 56px;
+  border-radius: var(--r-md);
+  background: var(--surface-2);
+}
