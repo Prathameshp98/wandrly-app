@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import { AvatarStack, Button, ButtonLink, I } from '@/components/primitives';
+import { AvatarStack, ButtonLink, I } from '@/components/primitives';
 import { TripCard, AddTripCard } from '@/components/dashboard/TripCard';
 import { SortableTripCard } from '@/components/dashboard/SortableTripCard';
 import { SortableContext, rectSortingStrategy } from '@dnd-kit/sortable';
@@ -19,6 +19,7 @@ import { useDashboard, useFolders, useMembers } from '@/lib/api/hooks/useTrips';
 import { useTripActions } from '@/components/dashboard/useTripActions';
 import { useShellStore } from '@/stores/shell';
 import type { DashboardTrip } from '@/types/domain';
+import { StatusPanel } from '@/components/dashboard/StatusPanel';
 import styles from '@/components/dashboard/dashboard.module.css';
 
 /**
@@ -83,13 +84,12 @@ export default function DashboardPage() {
   if (isError) {
     return (
       <div className={styles.page}>
-        <h1 className={styles.greetTitle}>We couldn&rsquo;t load your journeys.</h1>
-        <p className={styles.greetTag}>{(error as Error)?.message}</p>
-        <p style={{ marginTop: 18 }}>
-          <Button variant="primary" onClick={() => void refetch()}>
-            Try again
-          </Button>
-        </p>
+        <StatusPanel
+          tone="error"
+          title="We couldn’t load your journeys."
+          error={error}
+          action={{ label: 'Try again', onClick: () => void refetch() }}
+        />
       </div>
     );
   }

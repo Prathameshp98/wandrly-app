@@ -3,8 +3,9 @@
 import { useQuery } from '@tanstack/react-query';
 import { api } from '@/lib/api/client';
 import { keys } from '@/lib/api/keys';
-import { Button, Chip, I } from '@/components/primitives';
+import { Chip } from '@/components/primitives';
 import type { Invites } from '@/types/domain';
+import { StatusPanel } from '@/components/dashboard/StatusPanel';
 import styles from '@/components/dashboard/dashboard.module.css';
 import local from './invites.module.css';
 
@@ -51,23 +52,17 @@ export default function InvitesPage() {
           ))}
         </div>
       ) : isError ? (
-        <div>
-          <p className={styles.greetTag}>{(error as Error)?.message}</p>
-          <p style={{ marginTop: 16 }}>
-            <Button variant="primary" onClick={() => void refetch()}>
-              Try again
-            </Button>
-          </p>
-        </div>
+        <StatusPanel
+          tone="error"
+          title="We couldn’t load your invites."
+          error={error}
+          action={{ label: 'Try again', onClick: () => void refetch() }}
+        />
       ) : pending.length === 0 ? (
-        <div className={styles.emptyState}>
-          <I.Inbox size={26} />
-          <h2 className={styles.emptyTitle}>All clear</h2>
-          <p className={styles.emptyBody}>
-            No invitations waiting. When someone invites you to a journey, it shows up here and in
-            your inbox.
-          </p>
-        </div>
+        <StatusPanel
+          title="All clear"
+          body="No invitations waiting. When someone invites you to a journey, it shows up here and in your inbox."
+        />
       ) : (
         <ul className={local.list}>
           {pending.map((invite) => (

@@ -67,8 +67,21 @@ describe('userMessage', () => {
     }
   });
 
-  it('explains an unreachable server without alarming the user about their edit', () => {
-    expect(userMessage(new NetworkError('offline'))).toContain('keep your changes');
+  it('explains an unreachable server in terms the user can act on', () => {
+    // Deliberately not "we'll keep your changes": this same message renders
+    // when a *page* fails to load, where there is no pending edit to keep.
+    // The mutation path adds its own context by prefixing.
+    const message = userMessage(
+      new NetworkError('Could not reach the server (/v1/trips/dashboard)'),
+    );
+    expect(message).toContain('could not reach the server');
+    expect(message).toContain('Check your connection');
+  });
+
+  it('never lets the request path from a NetworkError reach the user', () => {
+    expect(
+      userMessage(new NetworkError('Could not reach the server (/v1/trips/dashboard)')),
+    ).not.toContain('/v1/');
   });
 
   it('passes through the auth message', () => {

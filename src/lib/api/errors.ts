@@ -137,7 +137,9 @@ const GENERIC_SERVER_MESSAGE = /^(internal server error|something went wrong)\.?
 
 export function userMessage(error: unknown): string {
   if (error instanceof NotAuthenticatedError) return error.message;
-  if (error instanceof NetworkError) return "You appear to be offline. We'll keep your changes.";
+  if (error instanceof NetworkError) {
+    return 'We could not reach the server. Check your connection and try again.';
+  }
 
   if (error instanceof ApiError) {
     const fallback = FALLBACK_MESSAGES[error.code as ApiErrorCode];

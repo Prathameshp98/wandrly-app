@@ -1,0 +1,65 @@
+.panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  text-align: center;
+  padding: 56px 32px;
+}
+
+/*
+ * Page-level: this state *is* the page, so it fills the column and centres in
+ * it. No border — a large outlined rectangle around a few centred lines draws
+ * the eye to how much empty space there is rather than to the way out of it.
+ */
+.panel[data-variant='page'] {
+  min-height: max(320px, calc(100dvh - 320px));
+}
+
+/*
+ * Inline: the section around it still has content and structure, so the dashed
+ * box marks out where the missing items would have been.
+ */
+.panel[data-variant='inline'] {
+  min-height: 0;
+  border: 1.5px dashed var(--border-2);
+  border-radius: 18px;
+}
+
+.panel[data-variant='inline'][data-tone='error'] {
+  border-style: solid;
+  border-color: color-mix(in srgb, var(--error) 34%, var(--border));
+  background: color-mix(in srgb, var(--error) 5%, transparent);
+}
+
+.icon {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 999px;
+  background: var(--surface-2);
+  color: var(--text-3);
+}
+
+.panel[data-tone='error'] .icon {
+  background: color-mix(in srgb, var(--error) 14%, transparent);
+  color: var(--error);
+}
+
+.title {
+  font-family: var(--f-display);
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  text-wrap: balance;
+}
+
+.body {
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--text-2);
+  max-width: 44ch;
+}

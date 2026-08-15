@@ -1,12 +1,12 @@
 'use client';
 
 import { useMemo } from 'react';
-import { Button, I } from '@/components/primitives';
 import { TripCard, AddTripCard, type TripAction } from './TripCard';
 import { useTripActions } from './useTripActions';
 import { useFolders, useTripList } from '@/lib/api/hooks/useTrips';
 import { useShellStore } from '@/stores/shell';
 import type { DashboardTrip, TripView } from '@/types/domain';
+import { StatusPanel } from '@/components/dashboard/StatusPanel';
 import styles from './dashboard.module.css';
 
 export interface TripListViewProps {
@@ -87,27 +87,22 @@ export function TripListView({
           ))}
         </div>
       ) : isError ? (
-        <div>
-          <p className={styles.greetTag}>{(error as Error)?.message}</p>
-          <p style={{ marginTop: 16 }}>
-            <Button variant="primary" onClick={() => void refetch()}>
-              Try again
-            </Button>
-          </p>
-        </div>
+        <StatusPanel
+          tone="error"
+          title="We couldn’t load these journeys."
+          error={error}
+          action={{ label: 'Try again', onClick: () => void refetch() }}
+        />
       ) : filtered.length === 0 ? (
-        <div className={styles.emptyState}>
-          <I.Compass size={26} />
-          <h2 className={styles.emptyTitle}>
-            {search ? `No matches for “${search}”` : empty.title}
-          </h2>
-          <p className={styles.emptyBody}>{search ? 'Try a different search.' : empty.body}</p>
-          {!search && empty.cta ? (
-            <Button variant="primary" onClick={() => setOpenModal('new-trip')}>
-              {empty.cta}
-            </Button>
-          ) : null}
-        </div>
+        <StatusPanel
+          title={search ? `No matches for “${search}”` : empty.title}
+          body={search ? 'Try a different search.' : empty.body}
+          action={
+            !search && empty.cta
+              ? { label: empty.cta, onClick: () => setOpenModal('new-trip') }
+              : undefined
+          }
+        />
       ) : (
         <section className={styles.section}>
           <div className={styles.sectionHead}>
