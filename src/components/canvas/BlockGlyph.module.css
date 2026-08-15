@@ -1,0 +1,6 @@
+.glyph {
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}

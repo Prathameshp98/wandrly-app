@@ -1,4 +1,9 @@
 import { defineConfig, devices } from '@playwright/test';
+import { config as loadEnv } from 'dotenv';
+
+// The canvas suite talks to the API directly to tidy up after itself, so it
+// needs the same dev token and base URL the app uses.
+loadEnv({ path: '.env.local', quiet: true });
 
 const PORT = Number(process.env.E2E_PORT ?? 3000);
 const BASE_URL = process.env.E2E_BASE_URL ?? `http://localhost:${PORT}`;

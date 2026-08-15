@@ -12,6 +12,8 @@ export interface PanelShellProps {
   title: string;
   /** Mono sub-line — counts, coordinates, the variant name. */
   sub?: string;
+  /** Decorative mark before the title — a block-type glyph, a trip cover. */
+  icon?: React.ReactNode;
   children: React.ReactNode;
   footer?: React.ReactNode;
   wide?: boolean;
@@ -31,6 +33,7 @@ export function PanelShell({
   onClose,
   title,
   sub,
+  icon,
   children,
   footer,
   wide = false,
@@ -48,7 +51,8 @@ export function PanelShell({
           {...(sub ? {} : { 'aria-describedby': undefined })}
         >
           <header className={styles.panelHead}>
-            <div>
+            {icon}
+            <div className={styles.panelHeadText}>
               <Dialog.Title className={styles.panelTitle}>{title}</Dialog.Title>
               {sub ? (
                 <Dialog.Description className={styles.panelSub}>{sub}</Dialog.Description>

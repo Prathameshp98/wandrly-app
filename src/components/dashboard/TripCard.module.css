@@ -231,10 +231,43 @@
   transform: none;
 }
 
+/*
+ * The action row lands exactly on the meta line, so the two swap rather than
+ * stack. The prototype layered them, and because the buttons are translucent
+ * the dates read straight through — legible as neither one thing nor the
+ * other. Fading the meta out costs nothing: the actions appear only on intent,
+ * and the same text is on the card's Peek drawer.
+ */
+.meta {
+  transition: opacity 200ms var(--ease-enter);
+}
+
+.card:hover .meta,
+.card:has(.actions:focus-within) .meta {
+  opacity: 0;
+}
+
 @media (hover: none) {
+  /*
+   * Nothing to hover, so the actions are always shown — which on the absolute
+   * layout above would hide the meta line permanently rather than on intent.
+   * Put them back in the flow instead and let the card grow.
+   */
   .actions {
+    position: static;
     opacity: 1;
     transform: none;
+    margin: 0 20px 16px;
+  }
+
+  .card:hover .meta {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .meta {
+    transition: none;
   }
 }
 

@@ -125,12 +125,17 @@
 
 .panelHead {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
-  gap: 16px;
+  gap: 12px;
   padding: 20px 22px 16px;
   border-bottom: 1px solid var(--border);
   flex-shrink: 0;
+}
+
+.panelHeadText {
+  flex: 1;
+  min-width: 0;
 }
 
 .panelTitle {

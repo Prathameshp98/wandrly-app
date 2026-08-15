@@ -73,7 +73,7 @@ export function TripCard({
 
       {/* Layered over the link rather than nested inside it — a button inside
           an anchor is invalid markup and breaks keyboard activation. */}
-      <div className={styles.actions}>
+      <div className={styles.actions} data-card-actions>
         <Link href={`/t/${trip.id}`} className={styles.action} draggable={false}>
           Open canvas
         </Link>

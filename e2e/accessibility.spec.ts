@@ -53,8 +53,13 @@ for (const theme of THEMES) {
     for (const route of ROUTES) {
       test(`${route.name} has no accessibility violations`, async ({ page }) => {
         await setTheme(page, theme);
-        await page.goto(route.path);
+        const response = await page.goto(route.path);
         await page.waitForLoadState('networkidle');
+
+        // A 404 page has no violations, so without this a route that stops
+        // resolving reports itself as clean rather than as broken — which is
+        // exactly what a stale dev server did to this suite once.
+        expect(response?.status(), `${route.path} did not render`).toBe(200);
 
         const results = await scan(page).analyze();
 

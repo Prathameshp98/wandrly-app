@@ -2,6 +2,7 @@
 
 import { I } from '@/components/primitives';
 import { metaFor } from './block-meta';
+import { GLYPHS } from './BlockGlyph';
 import type { Block } from '@/types/domain';
 import styles from './BlockPreview.module.css';
 
@@ -214,17 +215,3 @@ function Glyph({ type, colour, tint }: { type: string; colour?: string; tint?: s
     </div>
   );
 }
-
-const GLYPHS: Record<string, (props: { size?: number }) => React.ReactElement> = {
-  ACTIVITY: I.Mountain,
-  ACCOMMODATION: I.Suitcase,
-  RESTAURANT: I.Star,
-  TRANSPORT: I.ArrowR,
-  TICKET: I.Check,
-  PHOTO: I.Grid,
-  VIDEO: I.Grid,
-  LINK: I.Globe,
-  MAP_PIN: I.Pin,
-  NOTE: I.Pencil,
-  BUDGET: I.Sparkle,
-};

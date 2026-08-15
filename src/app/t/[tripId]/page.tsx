@@ -5,19 +5,26 @@ import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Button, I } from '@/components/primitives';
 import { DayRow } from '@/components/canvas/DayRow';
+import { BlockPicker } from '@/components/canvas/BlockPicker';
+import { BlockDetail, type BlockDraft } from '@/components/canvas/BlockDetail';
+import type { BlockType } from '@/components/canvas/block-meta';
 import { StatusPanel } from '@/components/dashboard/StatusPanel';
 import { coverBackground, tripEyebrow } from '@/components/dashboard/trip-presentation';
 import { useTrip } from '@/lib/api/hooks/useTrips';
 import {
   useAddDay,
   useCanvas,
+  useCreateBlock,
+  useDeleteBlock,
   useDeleteDay,
   useDuplicateDay,
+  useRestoreBlock,
+  useUpdateBlock,
   useUpdateDay,
   useVariants,
 } from '@/lib/api/hooks/useCanvas';
 import { toast } from '@/stores/toasts';
-import type { Block } from '@/types/domain';
+import type { Block, Day } from '@/types/domain';
 import styles from '@/components/canvas/canvas.module.css';
 
 const TOOLS = [
@@ -49,12 +56,18 @@ export default function CanvasPage({ params }: { params: Promise<{ tripId: strin
 
   const [activeTool, setActiveTool] = useState<string>('days');
   const [expandedBlockId, setExpandedBlockId] = useState<string | null>(null);
+  const [pickerDay, setPickerDay] = useState<Day | null>(null);
+  const [detailBlockId, setDetailBlockId] = useState<string | null>(null);
 
   const scope = { tripId, variantId: variantId ?? canvas?.variant?.id };
   const addDay = useAddDay(scope);
   const updateDay = useUpdateDay(scope);
   const deleteDay = useDeleteDay(scope);
   const duplicateDay = useDuplicateDay(scope);
+  const createBlock = useCreateBlock(scope);
+  const updateBlock = useUpdateBlock(scope);
+  const deleteBlock = useDeleteBlock(scope);
+  const restoreBlock = useRestoreBlock(scope);
 
   if (isError) {
     return (
@@ -76,6 +89,51 @@ export default function CanvasPage({ params }: { params: Promise<{ tripId: strin
   }
 
   const days = canvas?.days ?? [];
+
+  // Read the open block back out of the tree each render rather than holding a
+  // copy: after a save the canvas refetches, and a snapshot would show the
+  // drawer the pre-save values including a stale `version`.
+  const detailBlock =
+    detailBlockId === null
+      ? null
+      : (days.flatMap((day) => day.blocks).find((block) => block.id === detailBlockId) ?? null);
+
+  function addBlock(type: BlockType, day: Day) {
+    setPickerDay(null);
+    createBlock.mutate(
+      { dayId: day.id, type },
+      {
+        // Straight into the drawer: a new block has an empty title, so the
+        // next thing anyone wants is to name it.
+        onSuccess: (block) => {
+          setExpandedBlockId(block.id);
+          setDetailBlockId(block.id);
+        },
+      },
+    );
+  }
+
+  function saveBlock(block: Block, patch: Partial<BlockDraft>) {
+    updateBlock.mutate(
+      { blockId: block.id, version: block.version, ...patch },
+      { onSuccess: () => setDetailBlockId(null) },
+    );
+  }
+
+  function removeBlock(block: Block) {
+    // FR-UNDO-01. Blocks are soft-deleted, so undo restores the same row —
+    // its id, its sections and its place in the day all survive.
+    deleteBlock.mutate(
+      { blockId: block.id },
+      {
+        onSuccess: () =>
+          toast.undoable(`Deleted “${block.title || 'block'}”`, () =>
+            restoreBlock.mutate({ blockId: block.id }),
+          ),
+      },
+    );
+  }
+
   const blockCount = days.reduce((total, day) => total + day.blocks.length, 0);
   const confirmed = days.reduce(
     (total, day) => total + day.blocks.filter((block) => block.isConfirmed).length,
@@ -158,10 +216,8 @@ export default function CanvasPage({ params }: { params: Promise<{ tripId: strin
                     onToggleBlock={(blockId) =>
                       setExpandedBlockId((current) => (current === blockId ? null : blockId))
                     }
-                    onOpenDetail={(block: Block) =>
-                      toast.success(`“${block.title}” — drawer next.`)
-                    }
-                    onAddBlock={() => toast.success('The block picker lands next.')}
+                    onOpenDetail={(block: Block) => setDetailBlockId(block.id)}
+                    onAddBlock={(target: Day) => setPickerDay(target)}
                     onRenameDay={(target, title) =>
                       updateDay.mutate({ dayId: target.id, version: target.version, title })
                     }
@@ -202,6 +258,16 @@ export default function CanvasPage({ params }: { params: Promise<{ tripId: strin
           )}
         </div>
       </div>
+
+      <BlockPicker day={pickerDay} onClose={() => setPickerDay(null)} onPick={addBlock} />
+
+      <BlockDetail
+        block={detailBlock}
+        onClose={() => setDetailBlockId(null)}
+        onSave={saveBlock}
+        onDelete={removeBlock}
+        saving={updateBlock.isPending}
+      />
     </div>
   );
 
