@@ -1,0 +1,235 @@
+/* The 84×84 previews, ported from the prototype's `.prev-*` rules. */
+
+.preview {
+  position: relative;
+  width: 84px;
+  height: 84px;
+  border-radius: 9px;
+  overflow: hidden;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  background: var(--surface-2);
+  transition: transform 260ms var(--ease-enter);
+}
+
+:global([data-block]:hover) .preview {
+  transform: scale(1.06);
+}
+
+/* ── Transport ── */
+
+/* The route code and carrier are *text* on a tinted ground, so they take the
+   4.5:1 tone token rather than the 3:1 graphical one. Same reasoning in the
+   ticket, link and map treatments below. */
+.transport {
+  background: rgba(229, 101, 74, 0.12);
+  color: var(--tone-sienna-text);
+  flex-direction: column;
+  gap: 4px;
+  align-content: center;
+}
+
+.route {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--f-mono);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.routeMeta {
+  font-family: var(--f-mono);
+  font-size: 8.5px;
+  letter-spacing: 0.06em;
+  color: var(--tone-sienna-text);
+  max-width: 74px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: center;
+}
+
+/* ── Ticket ── */
+
+.ticket {
+  background: rgba(95, 190, 139, 0.12);
+  color: var(--tone-forest-text);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.ticketStub {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+}
+
+.ticketAdmit {
+  font-family: var(--f-mono);
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+}
+
+.ticketCount {
+  font-family: var(--f-display);
+  font-size: 17px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+/* The perforation is the signature of this one — a dashed tear across it. */
+.ticketTear {
+  width: 68px;
+  border-top: 1.5px dashed color-mix(in srgb, var(--forest) 45%, transparent);
+}
+
+.ticketTime {
+  font-family: var(--f-mono);
+  font-size: 10px;
+  color: var(--tone-forest-text);
+}
+
+/* ── Photos ── */
+
+.photos {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 2px;
+  padding: 0;
+  background: var(--surface-3);
+}
+
+.photos > span {
+  background: linear-gradient(135deg, var(--surface-2), var(--surface-3));
+  display: grid;
+  place-items: center;
+}
+
+.photoWide {
+  grid-column: span 2;
+  font-family: var(--f-mono);
+  font-size: 11px;
+  color: var(--text-3);
+}
+
+/* ── Video ── */
+
+.video {
+  background: rgba(155, 138, 251, 0.15);
+  color: var(--purple);
+}
+
+.play {
+  width: 0;
+  height: 0;
+  border-left: 15px solid currentColor;
+  border-top: 10px solid transparent;
+  border-bottom: 10px solid transparent;
+  margin-left: 4px;
+}
+
+/* ── Link ── */
+
+.link {
+  background: rgba(102, 198, 181, 0.14);
+  color: var(--tone-teal-text);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.linkDisc {
+  width: 30px;
+  height: 30px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--teal) 22%, transparent);
+  display: grid;
+  place-items: center;
+  font-size: 15px;
+}
+
+.linkHost {
+  font-family: var(--f-mono);
+  font-size: 8.5px;
+  color: var(--tone-teal-text);
+  max-width: 76px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ── Map ── */
+
+.map {
+  background: rgba(229, 101, 74, 0.1);
+  color: color-mix(in srgb, var(--sienna) 40%, transparent);
+}
+
+.contours {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.mapPin {
+  position: relative;
+  color: var(--sienna);
+}
+
+/* ── Budget ── */
+
+.budget {
+  background: var(--accent-soft);
+  color: var(--accent-text);
+  border: 1.5px dashed color-mix(in srgb, var(--accent) 45%, transparent);
+}
+
+.budgetSymbol {
+  font-family: var(--f-display);
+  font-size: 26px;
+  font-weight: 700;
+}
+
+/* ── Note ── */
+
+.note {
+  background: var(--surface-2);
+  color: var(--text-3);
+  position: relative;
+}
+
+/* Ruled paper, drawn with a repeating gradient rather than an image. */
+.noteRules {
+  position: absolute;
+  inset: 10px 8px;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent 13px,
+    var(--border) 13px,
+    var(--border) 14px
+  );
+  opacity: 0.9;
+}
+
+.notePencil {
+  position: relative;
+  font-size: 20px;
+}
+
+/* ── Glyph fallback ── */
+
+.glyph {
+  display: grid;
+  place-items: center;
+}

@@ -1,7 +1,8 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { AA_NORMAL, contrastRatio } from '@/lib/theme/contrast';
+import { AA_NORMAL, contrastRatio, flatten, parseColor } from '@/lib/theme/contrast';
+import { BLOCK_META, BLOCK_TYPES } from '@/components/canvas/block-meta';
 import { ACCENTS, accentAlphas } from '@/lib/theme/preferences';
 
 /**
@@ -85,6 +86,41 @@ describe.each([
   it('defines every surface and text tier', () => {
     for (const token of [...SURFACES, '--text', '--text-2', '--text-3', '--border', '--border-2']) {
       expect(theme[token], `${token} missing from ${themeName}`).toBeTruthy();
+    }
+  });
+});
+
+/**
+ * The canvas sets a block's type chip in that type's own hue, on that type's own
+ * tinted ground. Both halves are tokens, the tint is translucent, and the ground
+ * underneath changes with the surface — so the ratio is not visible in either
+ * file on its own. It is checked here because the browser suite only sees the
+ * types the seed happens to contain, and VIDEO is not one of them.
+ */
+describe.each([
+  ['dark', DARK],
+  ['light', LIGHT],
+])('%s theme block-type chips', (themeName, theme) => {
+  /** `var(--x)` → its value; anything else is already a colour. */
+  const value = (input: string) =>
+    input.startsWith('var(') ? (theme[input.slice(4, -1)] ?? input) : input;
+
+  it.each([...BLOCK_TYPES])('%s reads as text on its own tint, over every surface', (type) => {
+    const meta = BLOCK_META[type];
+    const ink = value(meta.text);
+    const tint = parseColor(value(meta.tint));
+    expect(parseColor(ink), `${type} text unresolved: ${meta.text}`).not.toBeNull();
+    expect(tint, `${type} tint unresolved: ${meta.tint}`).not.toBeNull();
+
+    for (const surface of SURFACES) {
+      // The tint is translucent, so the chip's real colour depends on what is
+      // behind it — flatten first, then measure against that.
+      const chip = flatten(tint!, parseColor(theme[surface])!);
+      const ratio = contrastRatio(ink, `rgb(${chip.r} ${chip.g} ${chip.b})`);
+      expect(
+        ratio!,
+        `${type}: ${meta.text} on ${meta.tint} over ${surface} in ${themeName}`,
+      ).toBeGreaterThanOrEqual(AA_NORMAL);
     }
   });
 });

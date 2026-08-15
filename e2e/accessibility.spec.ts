@@ -15,6 +15,8 @@ const ROUTES = [
   { path: '/forgot-password', name: 'forgot password' },
   { path: '/dev/tokens', name: 'tokens' },
   { path: '/dev/primitives', name: 'primitives' },
+  // The canvas seeds a known trip id, so this is stable across re-seeds.
+  { path: '/t/00000000-0000-7000-8000-00000000c001', name: 'canvas' },
 ] as const;
 
 const THEMES = ['dark', 'light'] as const;

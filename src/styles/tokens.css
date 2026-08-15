@@ -60,6 +60,18 @@
   --border: #23262e;
   --border-2: #323642;
 
+  /* The block-type palette as *text*.
+     `--teal` and friends are graphical tokens — a glyph on a tinted disc, at
+     WCAG's 3:1 non-text threshold. The canvas also sets type chips and route
+     codes in them, which is text at 4.5:1, and sienna on its own tint measures
+     3.84:1 here and 2.33:1 on paper. These are the smallest on-hue shifts that
+     clear 4.5:1 against each tone's tinted chip over every surface. */
+  --tone-teal-text: #66c6b5;
+  --tone-sienna-text: #e97a63;
+  --tone-amber-text: #e4b15e;
+  --tone-purple-text: #a090fb;
+  --tone-forest-text: #5fbe8b;
+
   --success: #5fbe8b;
   --warning: #e4b15e;
   --error: #e25d4c;
@@ -149,6 +161,12 @@
      to 2.87:1 on paper — every error message and status label in the light
      theme. Same FR-NFR-A11Y-05 treatment: darkened on-hue until they clear
      4.5:1 on all four light surfaces. Dark theme keeps the originals. */
+  --tone-teal-text: #376a61;
+  --tone-sienna-text: #994331;
+  --tone-amber-text: #785d31;
+  --tone-purple-text: #5f559b;
+  --tone-forest-text: #356b4e;
+
   --success: #3a7354;
   --warning: #806335;
   --error: #ae473a;

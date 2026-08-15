@@ -1,0 +1,217 @@
+/* Ported from `WANDRLY 2/styles.css` .block / .block-summary, layers resolved.
+   `.block-title` is 16px in the base layer and 14.5px under the shipped
+   `data-type="utility"` layer at 2882. */
+
+.block {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  transition:
+    border-color 200ms var(--ease-enter),
+    box-shadow 200ms var(--ease-enter),
+    transform 200ms var(--ease-enter);
+}
+
+.block:hover {
+  border-color: var(--border-2);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+}
+
+.block[data-expanded] {
+  border-color: var(--border-2);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+}
+
+:global(:root[data-theme='light']) .block:hover,
+:global(:root[data-theme='light']) .block[data-expanded] {
+  box-shadow: 0 6px 18px rgba(20, 24, 32, 0.08);
+}
+
+.block[data-dragging='true'] {
+  opacity: 0.4;
+  transform: scale(0.97) rotate(-1.5deg);
+}
+
+/* ── Collapsed summary ── */
+
+.summary {
+  display: grid;
+  grid-template-columns: auto 1fr 28px;
+  column-gap: 16px;
+  align-items: center;
+  width: 100%;
+  min-height: 92px;
+  padding: 14px 16px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.summary:hover {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+:global(:root[data-theme='light']) .summary:hover {
+  background: rgba(0, 0, 0, 0.02);
+}
+
+.main {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.typeChip {
+  font-family: var(--f-mono);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 3px 7px;
+  border-radius: 5px;
+  white-space: nowrap;
+}
+
+.time {
+  font-family: var(--f-mono);
+  font-size: 11px;
+  color: var(--text-2);
+  letter-spacing: 0.04em;
+}
+
+.title {
+  font-family: var(--f-body);
+  font-weight: 600;
+  font-size: 14.5px;
+  color: var(--text);
+  letter-spacing: -0.005em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sub {
+  font-size: 12px;
+  color: var(--text-2);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.metaRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 3px;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  min-width: 0;
+}
+
+.capability {
+  font-family: var(--f-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.06em;
+  color: var(--text-3);
+  background: var(--surface-3);
+  border-radius: 999px;
+  padding: 2px 7px;
+  white-space: nowrap;
+}
+
+.arrow {
+  width: 26px;
+  height: 26px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  color: var(--text-3);
+  border: 1px solid var(--border);
+  transition:
+    transform 240ms var(--ease-enter),
+    background 200ms,
+    color 200ms;
+}
+
+.block[data-expanded] .arrow {
+  transform: rotate(180deg);
+  background: var(--accent-soft);
+  color: var(--accent-text);
+  border-color: color-mix(in srgb, var(--accent) 40%, transparent);
+}
+
+/* ── Expanded body ── */
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 4px 18px 18px;
+  animation: expandIn 260ms var(--ease-enter);
+}
+
+@keyframes expandIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding-top: 4px;
+}
+
+.action {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-2);
+  font-size: 12px;
+  transition: all 160ms var(--ease-enter);
+}
+
+.action:hover {
+  border-color: var(--border-2);
+  color: var(--text);
+}
+
+.action:active {
+  transform: scale(0.97);
+  transition-duration: 60ms;
+}
+
+.actionDanger:hover {
+  border-color: var(--error);
+  color: var(--error);
+  background: color-mix(in srgb, var(--error) 10%, transparent);
+}
+
+@media (max-width: 640px) {
+  .summary {
+    grid-template-columns: auto 1fr;
+    row-gap: 10px;
+  }
+
+  .arrow {
+    display: none;
+  }
+}
